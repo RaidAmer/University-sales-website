@@ -4,5 +4,4 @@
 
 - Esteban Barbosa
 
-## How to Initialize and Run the App
-* ...
+

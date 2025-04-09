@@ -4,3 +4,4 @@ Team REIJ
 
 - Ilham Dinle
 - Jimmy Nguyen
+- Esteban Barbosa

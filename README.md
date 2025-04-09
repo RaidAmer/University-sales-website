@@ -2,5 +2,4 @@ Team REIJ
 
 ## Team Members
 
-- Ilham Dinle
-- Jimmy Nguyen
+- Jimmy Nguyen (jimmy@email.com)

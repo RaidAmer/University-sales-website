@@ -5,4 +5,4 @@
 - Jimmy Nguyen (jimmy@email.com)
 - Ilham Dinle (Ilham@email.com)
 - Raid Riyad Amer    
-- Esteban Barbosa
+- Esteban Barbosa (Esteban@email.com)

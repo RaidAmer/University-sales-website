@@ -1,7 +1,8 @@
-Team REIJ
+# Team REIJ
 
 ## Team Members
 
-- Ilham Dinle
-- Jimmy Nguyen
-- Esteban Barbosa
+- Jimmy Nguyen (jimmy@email.com)
+- Ilham Dinle (Ilham@email.com)
+- Raid Riyad Amer    
+- Esteban Barbosa (Esteban@email.com)

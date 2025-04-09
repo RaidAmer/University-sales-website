@@ -2,4 +2,5 @@ Team REIJ
 
 ## Team Members
 
-- Ilham Dinle
+- Ilham Dinle (Ilham@email.com)
+

@@ -2,8 +2,7 @@
 
 ## Team Members
 
-- REIJ
-
-## How to Initialize and Run the App
-
-...
+- Raid Riyad Amer  
+- Ilham Dinle  
+- Jimmy Nguyen  
+- Esteban Barbosa

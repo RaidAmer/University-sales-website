@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  devise_for :users
+  get 'users/show'
+  get 'users/edit'
+  get 'users/update'
   root to: redirect('/home')
 
   get "home", to: "home#index", as: "home"

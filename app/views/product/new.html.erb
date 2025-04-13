@@ -1,0 +1,12 @@
+<h1>Create New Product</h1>
+ 
+<%= bootstrap_form_with model: @product, url: products_path, method: :post, data: { turbo: false } do |f| %>
+ 
+  <%= f.text_field :name %>
+  <%= f.text_area :description %>
+  <%= f.number_field :price, step: 0.01 %>
+  <%= f.select :status, Product.statuses.keys.map { |s| [s.humanize, s] } %>
+  <%= f.file_field :image %>
+  <%= f.submit %>
+ 
+<% end %>

@@ -1,6 +1,6 @@
 <h1>Create New Product</h1>
  
-<%= bootstrap_form_with model: @product, url: products_path, method: :post, data: { turbo: false } do |f| %>
+<%= bootstrap_form_with model: @product, url: category_products_path(@category), method: :post, data: { turbo: false } do |f| %>
  
   <%= f.text_field :name %>
   <%= f.text_area :description %>

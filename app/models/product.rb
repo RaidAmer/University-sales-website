@@ -10,6 +10,15 @@
 #  status      :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  category_id :bigint
+#
+# Indexes
+#
+#  index_products_on_category_id  (category_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (category_id => categories.id)
 #
 class Product < ApplicationRecord
   enum status: { Active: 0, Inactive: 1, Sold: 2 }

@@ -1,0 +1,29 @@
+<div class="container mt-5" style="max-width: 600px;">
+  <div class="card shadow">
+    <div class="card-body">
+      <h2 class="card-title text-center mb-4">👤 Your Profile</h2>
+
+      <% if @user.avatar.attached? %>
+        <p><strong>Avatar:</strong></p>
+
+        <% if @user.avatar.variable? %>
+          <%= image_tag @user.avatar.variant(resize_to_limit: [150, 150]), class: "img-thumbnail" %>
+        <% else %>
+          <p><em>Your current avatar is not a valid image preview (e.g. PDF). Please upload an image instead.</em></p>
+          <%= link_to "Download File", url_for(@user.avatar), class: "btn btn-outline-secondary btn-sm" %>
+        <% end %>
+      <% end %>
+
+      <hr>
+
+      <% if @user.bio.present? %>
+        <p><strong>Bio:</strong></p>
+        <p><%= simple_format(@user.bio) %></p>
+      <% else %>
+        <p><em>No bio added yet.</em></p>
+      <% end %>
+
+      <%= link_to "Edit Profile", edit_profile_path, class: "btn btn-primary mt-3" %>
+    </div>
+  </div>
+</div>

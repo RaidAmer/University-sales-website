@@ -24,9 +24,14 @@ Rails.application.routes.draw do
   post 'users', to: 'users/registrations#create', as: 'users'
   get 'successfully_created_account', to: 'users/registrations#success', as: 'successfully_created_account'
 
-  # Products
-  get 'products', to: 'product#index', as: 'products'
-  post 'products', to: 'product#create'
-  get 'products/new', to: 'product#new', as: 'new_product'
-  get 'products/:id', to: 'product#show', as: 'product'
+  get 'categories/:category_id/products', to: 'product#index', as: 'category_products'
+  post 'categories/:category_id/products', to: 'product#create'
+  get 'categories/:category_id/products/new', to: 'product#new', as: 'new_category_product'
+  get 'categories/:category_id/products/:id', to: 'product#show', as: 'category_product'
+
+  get "categories", to: "category#index", as: "categories"
+  post 'categories', to: 'category#create'
+  get 'categories/new', to: 'category#new', as: 'new_category'
+  get 'categories/:id', to: 'category#show', as: 'category'
+
 end

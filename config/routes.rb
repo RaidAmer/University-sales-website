@@ -1,9 +1,14 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   root to: redirect('/home')
 
-  get "home", to: "home#index", as: "home"
+  get 'home', to: 'home#index', as: 'home'
 
-  get "products", to: "product#index", as: "products"
+  get 'events', to: 'events#index', as: 'events'
+  get 'events/:id', to: 'events#show', as: 'event'
+
+  get 'products', to: 'product#index', as: 'products'
   post 'products', to: 'product#create'
   get 'products/new', to: 'product#new', as: 'new_product'
   get 'products/:id', to: 'product#show', as: 'product'

@@ -1,0 +1,8 @@
+<h1><%= @event.event_name %></h1>
+<h2>Location: <%= @event.location %></h2>
+<h2>Date: <%= @event.date.strftime("%m/%d/%Y") %></h2>
+<h2>Price: <%= @event.price %></h2>
+
+<p><%= @event.description %></p>
+
+<p><%= link_to "Back to Events", events_path %></p>

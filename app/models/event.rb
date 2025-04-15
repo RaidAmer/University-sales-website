@@ -17,7 +17,7 @@
 #  updated_at       :datetime         not null
 #
 class Event < ApplicationRecord
-  serialize :registered_users, Array
+  serialize :registered_users, Array, coder: YAML
 
   validates :event_name, :location, :date, :price, :capacity, presence: true
   validates :date, comparison: { greater_than_or_equal_to: Time.current }

@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[7.1].define(version: 2025_04_13_203922) do
-=======
 ActiveRecord::Schema[7.1].define(version: 2025_04_14_222908) do
->>>>>>> main
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -46,14 +42,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_14_222908) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "categories", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.boolean "is_featured"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.float "price"
@@ -62,8 +50,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_14_222908) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "category_id"
-    t.index ["category_id"], name: "index_products_on_category_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -76,12 +62,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_14_222908) do
     t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "last_name"
-<<<<<<< HEAD
-=======
     t.string "uuid"
     t.boolean "approved"
     t.text "bio"
->>>>>>> main
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
@@ -89,5 +72,4 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_14_222908) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "products", "categories"
 end

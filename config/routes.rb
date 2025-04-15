@@ -1,14 +1,6 @@
 Rails.application.routes.draw do
-<<<<<<< HEAD
-  devise_for :users
-  get 'users/show'
-  get 'users/edit'
-  get 'users/update'
-  root to: redirect('/home')
-=======
-  # Profile
   resource :profile, only: [:show, :edit, :update]
->>>>>>> main
+
 
   # Devise (Login/Register)
   devise_for :users, 

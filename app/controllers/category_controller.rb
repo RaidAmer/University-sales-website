@@ -1,6 +1,6 @@
 class CategoryController < ApplicationController
   def index
-    @categorys = Category.all
+    @categories = Category.all
     render :index
   end
   
@@ -13,7 +13,7 @@ class CategoryController < ApplicationController
     @category = Category.new(params.require(:category).permit(:name, :description, :icon, :is_featured))
     if @category.save
       flash[:success] = 'New Category successfully added!'
-      redirect_to categorys_url
+      redirect_to categories_url
     else
       flash.now[:error] = 'Category Creation failed'
       render :new, status: :unprocessable_entity

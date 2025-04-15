@@ -20,5 +20,5 @@ class Category < ApplicationRecord
 
   has_one_attached :icon
 
-  validates :name, :is_featured, presence: true
+  validates :name, presence: true, uniqueness: true
 end

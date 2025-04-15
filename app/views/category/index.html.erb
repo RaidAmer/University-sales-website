@@ -10,10 +10,16 @@
   </thead>
  
   <tbody>
-    <% @categorys.each do |category| %>
+    <% @categories.each do |category| %>
       <tr>
         <td><%= link_to category.name, category_products_path(category) %></td>
-        <td><%= image_tag category.icon, width: 100, height: 100, alt: "#{category.name} image" %></td>
+        <td>
+          <% if category.icon.present? %>
+          <%= image_tag category.icon, width: 100, height: 100, alt: "#{category.name} image" %>
+          <% else %>
+            <span>No image available</span>
+          <% end %>
+          </td>
       </tr>
     <% end %>
   </tbody>

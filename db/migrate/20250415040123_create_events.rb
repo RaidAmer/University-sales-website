@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 class CreateEvents < ActiveRecord::Migration[7.1]
   def change
     create_table :events do |t|
+      add_index :events, :event_name, unique: true
       t.string :event_name
       t.string :location
       t.datetime :date

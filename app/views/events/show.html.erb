@@ -1,7 +1,13 @@
 <h1><%= @event.event_name %></h1>
-<h2>Location: <%= @event.location %></h2>
-<h2>Date: <%= @event.date.strftime("%m/%d/%Y") %></h2>
-<h2>Price: <%= @event.price %></h2>
+<h4>Location: <%= @event.location %></h4>
+<h4>Date: <%= @event.date.strftime("%m/%d/%Y") %></h4>
+<h4>Price: <%= @event.price %></h4>
+
+<% if @event.image.attached? %>
+    <%= image_tag @event.image, width: 300 %>
+<% else %>
+    <p>No image uploaded.</p>
+<% end %>
 
 <p><%= @event.description %></p>
 

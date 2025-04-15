@@ -1,0 +1,13 @@
+<h1>Create New Category</h1>
+ 
+<%= bootstrap_form_with model: @category, url: categories_path, method: :post, data: { turbo: false } do |f| %>
+ 
+  <%= f.text_field :name %>
+  <%= f.text_area :description %>
+  <%= f.file_field :icon %>
+  <%= f.check_box :is_featured %>
+  <%= f.submit %>
+ 
+<% end %>
+
+<p><%= link_to "Back", categories_path%></p>

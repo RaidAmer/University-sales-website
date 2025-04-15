@@ -27,4 +27,23 @@ class EventsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
+
+  def register
+    @event = Event.find(params[:id])
+
+    if current_user
+      @event.registered_users << current_user.username unless @event.registered_users.include?(current_user.username)
+
+      if @event.save
+        flash[:success] = 'You have successfulyl registered for this event!'
+        redirect_to @event
+      else
+        flash[:error] = 'There was an issue with your registration.'
+        redirect_to @event
+      end
+    else
+      flash[:error] = 'You must be logged in to register.'
+      redirect_to login_path
+    end
+  end
 end

@@ -11,4 +11,8 @@
 
 <p><%= @event.description %></p>
 
+<%= form_with url: register_event_path(@event), method: :post, local: true do %>
+    <%= submit_tag "Register, class: 'btn btn-success" %>
+<% end %>
+
 <p><%= link_to "Back to Events", events_path %></p>

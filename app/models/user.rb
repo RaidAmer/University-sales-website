@@ -5,6 +5,7 @@
 # Table name: users
 #
 #  id                     :bigint           not null, primary key
+#  admin                  :boolean
 #  approved               :boolean
 #  bio                    :text
 #  email                  :string           default(""), not null

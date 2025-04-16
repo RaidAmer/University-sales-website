@@ -16,6 +16,11 @@ class EventsController < ApplicationController
     render :new
   end
 
+  def edit
+    @event = Event.find(params[:id])
+    render :edit
+  end
+
   def create
     @event = Event.new(params.require(:event).permit(:event_name, :location, :price, :date, :capacity, :description,
                                                      :image))
@@ -26,6 +31,25 @@ class EventsController < ApplicationController
       flash.now[:error] = 'Event creation failed.'
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def update
+    @event = Event.find(params[:id])
+    if @event.update(params.require(:event).permit(:event_name, :location, :price, :date, :capacity, :description,
+                                                   :image))
+      flash[:success] = 'Event successfully updated!'
+      redirect_to event_url(@event)
+    else
+      flash.now[:error] = 'Event update failed'
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @event = Event.find(params[:id])
+    @event.destroy
+    flash[:success] = 'The event was successfully deleted.'
+    redirect_to events_url, status: :see_other
   end
 
   def register

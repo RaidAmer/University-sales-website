@@ -1,0 +1,17 @@
+<h1>Edit Event</h1>
+
+<%= bootstrap_form_with(model: @event, local: true, html: { multipart: true }, data: { turbo: false }) do |f| %>
+
+    <%= f.text_field :event_name %>
+    <%= f.text_field :location %>
+    <%= f.text_field :price %>
+    <%= f.date_field :date %>
+    <%= f.text_field :capacity %>
+    <%= f.text_area :description %>
+    <%= f.file_field :image %>
+
+    <%= f.submit 'Update Event', class: 'btn btn-primary' %>
+
+<% end %>
+
+<p><%= link_to "Don't Update Event", events_path, class: "btn btn-secondary" %></p>

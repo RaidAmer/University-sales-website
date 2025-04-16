@@ -1,7 +1,7 @@
-<h1><%= @event.event_name %></h1>
+<h1><strong><%= @event.event_name %></strong></h1>
 <p>Location: <%= @event.location %></p>
 <p>Date: <%= @event.date.strftime("%m/%d/%Y") %></p>
-<p>Price: <%= @event.price %></p>
+<p>Price: <%= @event.price == 0 ? "Free" : number_to_currency(@event.price) %></p>
 
 <% if @event.image.attached? %>
     <%= image_tag @event.image, width: 300 %>
@@ -9,7 +9,7 @@
     <p>No image uploaded.</p>
 <% end %>
 
-<p>Description:</p>
+<p><strong>Description:</strong></p>
 <p><%= @event.description %></p>
 
 <%= form_with url: register_event_path(@event), method: :post, local: true do %>

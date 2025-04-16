@@ -59,7 +59,13 @@ end
   def will_save_change_to_email?
     false
   end
+  after_initialize :set_defaults, if: :new_record?
 
+  def set_defaults
+    self.approved ||= false
+    self.admin ||= false
+  end
+  
   # Active Storage attachment
   has_one_attached :university_id
 

@@ -17,7 +17,7 @@
                 <td><%= event.event_name %></td>
                 <td><%= event.location %></td>
                 <td><%= event.date.strftime("%m/%d/%Y") %></td>
-                <td><%= event.price %></td>
+                <td><%= number_to_currency(event.price) %></td>
                 <td><%= link_to "Register", event_path(event), class: 'btn btn-primary' %></td>
             </tr>
         <% end %>

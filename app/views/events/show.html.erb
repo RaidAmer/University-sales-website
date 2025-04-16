@@ -1,7 +1,7 @@
 <h1><%= @event.event_name %></h1>
-<h4>Location: <%= @event.location %></h4>
-<h4>Date: <%= @event.date.strftime("%m/%d/%Y") %></h4>
-<h4>Price: <%= @event.price %></h4>
+<p>Location: <%= @event.location %></p>
+<p>Date: <%= @event.date.strftime("%m/%d/%Y") %></p>
+<p>Price: <%= @event.price %></p>
 
 <% if @event.image.attached? %>
     <%= image_tag @event.image, width: 300 %>
@@ -9,10 +9,11 @@
     <p>No image uploaded.</p>
 <% end %>
 
+<p>Description:</p>
 <p><%= @event.description %></p>
 
 <%= form_with url: register_event_path(@event), method: :post, local: true do %>
-    <%= submit_tag "Register, class: 'btn btn-success" %>
+    <%= submit_tag "Register", class: 'btn btn-success' %>
 <% end %>
 
-<p><%= link_to "Back to Events", events_path %></p>
+<p><%= link_to "Back to Events", events_path, class: 'btn btn-primary' %></p>

@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema[7.1].define(version: 2025_04_15_011911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,6 +75,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_15_011911) do
     t.datetime "timestamp"
     t.string "receipt"
     t.integer "checkout_order_id"
+  end
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.boolean "is_featured"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -86,6 +92,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_15_011911) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "category_id"
+    t.index ["category_id"], name: "index_products_on_category_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -104,4 +112,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_15_011911) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
+
+  add_foreign_key "products", "categories"
 end

@@ -10,13 +10,13 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-User.create!(
-  uuid: "U00828281",
-  password: "123456",
-  password_confirmation: "123456",
-  first_name: "Ilham",
-  last_name: "Dinle",
-  email: "yhssein1@memphis.edu", # or whatever email you want
-  approved: true,
-  admin: true
-)
+User.find_or_create_by!(uuid: "U00828281") do |user|
+    user.first_name = "Ilham"
+    user.last_name = "Dinle"
+    user.email = "Ilham@gmail.com"
+    user.password = "123456"
+    user.password_confirmation = "123456"
+    user.admin = true
+    user.approved = true
+  end
+  

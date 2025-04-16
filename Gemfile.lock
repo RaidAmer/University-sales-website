@@ -462,6 +462,7 @@ DEPENDENCIES
   htmlbeautifier
   importmap-rails
   jbuilder
+  marcel
   pg (~> 1.1)
   pgreset
   puma (>= 5.0)

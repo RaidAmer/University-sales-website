@@ -115,3 +115,5 @@ gem 'rubocop-rspec_rails', require: false, group: %i[development test]
 # Lint your ERB or HTML files
 gem 'erb_lint', require: false, group: %i[development test]
 gem 'htmlbeautifier', require: false, group: %i[development test]
+
+gem 'marcel'

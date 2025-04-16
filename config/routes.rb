@@ -42,6 +42,7 @@ end
   get 'admin/users', to: 'admin#users', as: 'custom_admin_users'
   patch 'admin/users/:id/approve', to: 'admin#approve', as: 'approve_user'
   
+  get 'products', to: 'product#index', as: 'products'
 
 
 end

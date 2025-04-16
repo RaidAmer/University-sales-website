@@ -4,6 +4,8 @@
 <p><%= image_tag @product.image, width: 100, height: 100, alt: "#{@product.name} image" %></p>
 <p><%=@product.price%></p>
 <p><%=@product.status%></p>
+<%= button_to "Add to Cart", cart_items_path(product_id: @product.id), method: :post, class: "btn btn-success" %>
+
 
 <p>
 <%= link_to "Back to Store", category_products_path(@category) %>

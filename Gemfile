@@ -119,3 +119,13 @@ gem 'erb_lint', require: false, group: %i[development test]
 gem 'htmlbeautifier', require: false, group: %i[development test]
 
 gem "msgpack", "~> 1.8"
+
+gem 'pdf-reader'       # for reading PDFs
+gem 'rtesseract'       # for extracting text from images
+gem 'mini_magick'      # required by rtesseract
+gem 'rails_admin', '~> 3.1'
+
+
+
+gem "cssbundling-rails"
+gem "cssbundling-rails"

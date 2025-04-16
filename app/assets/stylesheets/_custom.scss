@@ -13,12 +13,15 @@
  */
 
 // Custom bootstrap variables must be set or imported *before* bootstrap.
-@import "yeti/variables";
-@import "bootstrap";
-@import "yeti/bootswatch";
+@import "bootswatch/dist/yeti/variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootswatch/dist/yeti/bootswatch";
 
-@import "rails_bootstrap_forms";
+
 @import "success";
+
+
+
 
 
 label.required:after {

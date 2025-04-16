@@ -2,12 +2,29 @@
 
 <%= bootstrap_form_with model: @user, url: users_path, method: :post, data: { turbo: false }, html: { multipart: true } do |f| %>
 
+  <% if resource.errors.any? %>
+  <div class="alert alert-danger">
+    <h4><%= pluralize(resource.errors.count, "error") %> prevented this account from being created:</h4>
+    <ul>
+      <% resource.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+
   <%= f.email_field :email, label: "Email" %>
   <%= f.text_field :first_name, label: "First Name" %>
   <%= f.text_field :last_name, label: "Last Name" %>
   <%= f.password_field :password, label: "Password" %>
   <%= f.password_field :password_confirmation, label: "Confirm Password" %>
   <%= f.file_field :university_id, label: "Upload University ID" %>
+  <div class="mb-3">
+  <%= f.label :uuid_confirmation, "Enter the UUID from your University ID", class: "form-label" %>
+  <%= f.text_field :uuid_confirmation, class: "form-control", placeholder: "e.g., U00123456" %>
+</div>
+
 
   <%= f.submit "Create Account" %>
 <% end %>

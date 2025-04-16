@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
+  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   resource :profile, only: [:show, :edit, :update]
 
+# config/routes.rb
+namespace :admin do
+  resources :users
+end
 
   # Devise (Login/Register)
   devise_for :users, 
@@ -33,5 +38,10 @@ Rails.application.routes.draw do
   post 'categories', to: 'category#create'
   get 'categories/new', to: 'category#new', as: 'new_category'
   get 'categories/:id', to: 'category#show', as: 'category'
+  
+  get 'admin/users', to: 'admin#users', as: 'custom_admin_users'
+  patch 'admin/users/:id/approve', to: 'admin#approve', as: 'approve_user'
+  
+
 
 end

@@ -1,5 +1,6 @@
 class ProductController < ApplicationController
-
+ 
+  
   def index
     @category = Category.find(params[:category_id])
     @products = @category.products
@@ -29,4 +30,16 @@ class ProductController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
+
+
+  before_action :check_approval
+
+  private
+  
+  def check_approval
+    unless current_user.approved?
+      redirect_to root_path, alert: "You must be approved to access this page."
+    end
+  end
+  
 end

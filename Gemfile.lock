@@ -511,13 +511,10 @@ DEPENDENCIES
   image_processing (~> 1.2)
   importmap-rails
   jbuilder
-
   marcel
-
   mini_magick
   msgpack (~> 1.8)
   pdf-reader
-
   pg (~> 1.1)
   pgreset
   puma (>= 5.0)

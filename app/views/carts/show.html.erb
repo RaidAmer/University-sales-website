@@ -29,7 +29,7 @@
     </tbody>
   </table>
 
-  <p><strong>Total:</strong> $<%= @total %></p>
+  <p><strong>Total:</strong> $<%= '%.2f' % @total %></p>
 
   <%= form_with url: checkout_orders_path, method: :post do |f| %>
     <%= hidden_field_tag :total_price, @total %>

@@ -18,6 +18,7 @@ class PaymentTransactionsController < ApplicationController
     @payment_transaction.success = true
 
     if @payment_transaction.save
+      CartItem.where(cart_id: current_cart.id).destroy_all if current_cart.present?
       flash[:notice] = 'Payment Successful'
       redirect_to home_path
     else

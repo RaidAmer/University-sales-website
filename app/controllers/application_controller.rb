@@ -1,5 +1,8 @@
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
+  
+  def current_cart
+    @current_cart ||= Cart.first
   before_action :store_user_location!, if: :storable_location?
 
   protected
@@ -21,5 +24,6 @@ class ApplicationController < ActionController::Base
   # After login, redirect them back to that page
   def after_sign_in_path_for(resource_or_scope)
     stored_location_for(resource_or_scope) || root_path
+    
   end
 end

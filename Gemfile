@@ -118,6 +118,8 @@ gem 'rubocop-rspec_rails', require: false, group: %i[development test]
 gem 'erb_lint', require: false, group: %i[development test]
 gem 'htmlbeautifier', require: false, group: %i[development test]
 
+gem 'marcel'
+
 gem "msgpack", "~> 1.8"
 
 gem 'pdf-reader'       # for reading PDFs

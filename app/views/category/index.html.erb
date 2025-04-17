@@ -27,7 +27,10 @@
 </table>
 
 <p>
+<% if user_signed_in? && current_user.approved? %>
   <%= link_to "Create New category", new_category_path %>
+<% end %>
+
 </p>
 
 <p><%= link_to "Back", home_path %></p>

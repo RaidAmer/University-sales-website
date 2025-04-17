@@ -10,22 +10,21 @@
           <%= link_to "Home", home_path, class: "nav-link active" %>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
+          <%= link_to "Products", products_path, class: "nav-link active" %>
         </li>
         <li class="nav-item">
           <%= link_to "Events", events_path, class: "nav-link active" %>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Sell A Product</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown link
+            My Account
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="#">Log Out</a></li>
           </ul>
         </li>
       </ul>

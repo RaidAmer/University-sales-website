@@ -10,14 +10,13 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-user = User.find_or_initialize_by(uuid: "U00828281")
-user.update!(
-  email: "Ilham@gmail.com",
+User.create!(
+  uuid: "U00828281",
   password: "123456",
   password_confirmation: "123456",
   first_name: "Ilham",
   last_name: "Dinle",
+  email: "yhssein1@memphis.edu",
   approved: true,
-  admin: true,
-  university: File.open(Rails.root.join("app/assets/images/default_university.png"))
+  admin: true
 )

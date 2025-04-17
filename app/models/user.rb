@@ -73,13 +73,14 @@ end
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :password, presence: true, on: :create
-  validate  :university_id_presence
+  validate :university_id_presence_unless_admin
 
   private
-
-  def university_id_presence
-    unless university_id.attached?
+  
+    def university_id_presence_unless_admin
+      return if admin? # Skip if it's an admin user
+      unless university_id.attached?
       errors.add(:university_id, "must be uploaded")
+      end
     end
   end
-end

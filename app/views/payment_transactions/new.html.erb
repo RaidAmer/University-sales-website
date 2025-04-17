@@ -1,0 +1,11 @@
+<h1>Payment</h1>
+
+<p>Total to Pay: $<%= @checkout_order.total_price %></p>
+
+<%= form_with model: @payment_transaction, url: payment_transactions_path, method: :post do |f| %>
+  <%= hidden_field_tag :amount, @checkout_order.total_price %>
+  <%= hidden_field_tag :user_id, @checkout_order.user_id %>
+  <%= hidden_field_tag :checkout_order_id, @checkout_order.id %>
+  <%= f.select :method, ["Credit", "Campus", "Debit", "Apple Pay"], {}, class: "form-control" %>
+  <%= f.submit "Pay", class: "btn btn-success" %>
+<% end %>

@@ -10,8 +10,8 @@
     <%= f.text_area :description %>
     <%= f.file_field :image %>
 
-    <%= f.submit 'Create Event', class: 'btn btn-primary' %>
-
+    <div class="d-flex gap-2 mt-3">
+        <%= f.submit 'Create Event', class: 'btn btn-primary' %>
+        <%= link_to "Back to Events", events_path, class: "btn btn-secondary" %>
+    </div>
 <% end %>
-
-<p><%= link_to "Back to Events", events_path, class: "btn btn-secondary" %></p>

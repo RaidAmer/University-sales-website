@@ -8,8 +8,7 @@
             <th>Date</th>
             <th>Price</th>
             <th>Register</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th>Organizer</th>
         </tr>
     </thead>
 
@@ -21,8 +20,7 @@
                 <td><%= event.date.strftime("%m/%d/%Y") %></td>
                 <td><%= event.price == 0 ? "Free" : number_to_currency(event.price) %></td>
                 <td><%= link_to "Register", event_path(event), class: 'btn btn-primary' %></td>
-                <td><%= link_to "Edit", edit_event_path(event), class: 'btn btn-primary' %></td>
-                <td><%= button_to "Delete", event_path(event), method: :delete, data: { turbo: false }, class: "btn btn-sm btn-danger" %></td>
+                <td><%= event.user.first_name %> <%= event.user.last_name %></td>
             </tr>
         <% end %>
     </tbody>

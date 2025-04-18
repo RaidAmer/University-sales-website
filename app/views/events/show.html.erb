@@ -1,4 +1,5 @@
 <h1><strong><%= @event.event_name %></strong></h1>
+<p><strong>Organizer:</strong> <%= @event.user.first_name %> <%= @event.user.last_name %> (<%= @event.user.email %>)</p>
 <p>Location: <%= @event.location %></p>
 <p>Date: <%= @event.date.strftime("%m/%d/%Y") %></p>
 <p>Price: <%= @event.price == 0 ? "Free" : number_to_currency(@event.price) %></p>
@@ -6,14 +7,48 @@
 <% if @event.image.attached? %>
     <%= image_tag @event.image, width: 300 %>
 <% else %>
-    <p>No image uploaded.</p>
+    <p>No image attached.</p>
 <% end %>
 
 <p><strong>Description:</strong></p>
-<p><%= @event.description %></p>
+<p><%= @event.description.present? ? @event.description : "No description provided." %></p>
 
-<%= form_with url: register_event_path(@event), method: :post, local: true do %>
-    <%= submit_tag "Register", class: 'btn btn-success' %>
+<% if user_signed_in? && @event.user == current_user %>
+    <div class="d-flex gap-2 mt-3">
+        <%= link_to "Edit", edit_event_path(@event), class: 'btn btn-primary btn-sm' %>
+        <%= button_to "Delete", event_path(@event), method: :delete, data: { turbo: false }, class: "btn btn-danger btn-sm" %>
+    </div>
 <% end %>
 
+<% if user_signed_in? && current_user == @event.user %>
+    <!-- If the creator is viewing the page, then the Register button should not be displayed. -->
+<% elsif @event.registered_users.include?(current_user) %>
+    <%= form_with url: unregister_event_path(@event), method: :post, local: true do %>
+        <%= submit_tag "Unregister", class: 'btn btn-warning' %>
+    <% end %>
+<% elsif user_signed_in? && current_user.approved? %>
+    <%= form_with url: register_event_path(@event), method: :post, local: true do %>
+        <%= submit_tag "Register", class: 'btn btn-success' %>
+    <% end %>
+<% else %>
+    <%= form_with url: new_user_path(@user), method: :get, turbo: false do %>
+        <%= link_to "Sign In To Register", new_user_path, class: 'btn btn-primary' %>
+    <% end %>
+<% end %>
+
+<p></p>
 <p><%= link_to "Back to Events", events_path, class: 'btn btn-primary' %></p>
+
+<% if user_signed_in? && current_user == @event.user %>
+    <h3>Registered Attendees:</h3>
+
+    <% if @event.registered_users.any? %>
+        <ul>
+            <% @event.registered_users.each do |user| %>
+                <li><%= user.first_name %> <%= user.last_name %> (<%= user.email %>)</li> <!-- Or user.name if you have that -->
+            <% end %>
+        </ul>
+    <% else %>
+        <p>No one has registered for this event yet.</p>
+    <% end %>
+<% end %>

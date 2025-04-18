@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class EventsController < ApplicationController
+  before_action :authorize_user!, only: %i[edit update destroy]
   def index
     @events = Event.order(:date)
     render :index
@@ -22,8 +23,8 @@ class EventsController < ApplicationController
   end
 
   def create
-    @event = Event.new(params.require(:event).permit(:event_name, :location, :price, :date, :capacity, :description,
-                                                     :image))
+    @event = current_user.events.build(params.require(:event).permit(:event_name, :location, :price, :date, :capacity,
+                                                                     :description, :image))
     if @event.save
       flash[:success] = 'New event successfully created!'
       redirect_to events_url
@@ -55,19 +56,40 @@ class EventsController < ApplicationController
   def register
     @event = Event.find(params[:id])
 
-    if current_user
-      @event.registered_users << current_user.username unless @event.registered_users.include?(current_user.username)
-
-      if @event.save
-        flash[:success] = 'You have successfulyl registered for this event!'
-        redirect_to @event
+    if current_user.approved?
+      if @event.registered_users.include?(current_user)
+        flash[:notice] = 'You have already registered for this event.'
       else
-        flash[:error] = 'There was an issue with your registration.'
-        redirect_to @event
+        @event.registered_users << current_user
+        flash[:success] = 'Successfully registered!'
       end
     else
-      flash[:error] = 'You must be logged in to register.'
-      redirect_to login_path
+      flash[:alert] = 'You must be approved to register.'
     end
+
+    redirect_to @event
+  end
+
+  def unregister
+    @event = Event.find(params[:id])
+
+    if @event.registered_users.include?(current_user)
+      @event.registered_users.delete(current_user)
+      flash[:notice] = 'You have been unregistered from the event.'
+    else
+      flash[:alert] = 'You are not registered for this event.'
+    end
+
+    redirect_to @event
+  end
+
+  private
+
+  def authorize_user!
+    @event = Event.find(params[:id])
+    return if @event.user == current_user
+
+    flash[:alert] = 'You are not authorized to modify this event.'
+    redirect_to events_path
   end
 end

@@ -1,0 +1,42 @@
+<h1>My Cart</h1>
+
+<% if @cart_items.any? %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @cart_items.each do |item| %>
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center;">
+              <%= image_tag item.product.image, width: 60, height: 60, style: "margin-right: 10px;" %>
+              <%= item.product.name %>
+            </div>
+          </td>
+          <td><%= item.quantity %></td>
+          <td>$<%= item.quantity * item.product.price %></td>
+          <td>
+            <%= button_to "Remove", cart_item_path(item), method: :delete, class: "btn btn-danger btn-sm" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <p><strong>Total:</strong> $<%= '%.2f' % @total %></p>
+
+  <%= form_with url: checkout_orders_path, method: :post do |f| %>
+    <%= hidden_field_tag :total_price, @total %>
+    <%= hidden_field_tag :user_id, 1 %>
+    <%= f.submit "Proceed to Payment", class: "btn btn-primary" %>
+  <% end %>
+
+<% else %>
+  <p>There are no items in your cart.</p>
+<% end %>

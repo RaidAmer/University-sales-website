@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 
 ruby '3.3.6'
 
+
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.1.5', '>= 7.1.5.1'
 
@@ -44,7 +46,7 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 gem 'bootsnap', require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.2"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -115,3 +117,17 @@ gem 'rubocop-rspec_rails', require: false, group: %i[development test]
 # Lint your ERB or HTML files
 gem 'erb_lint', require: false, group: %i[development test]
 gem 'htmlbeautifier', require: false, group: %i[development test]
+
+gem 'marcel'
+
+gem "msgpack", "~> 1.8"
+
+gem 'pdf-reader'       # for reading PDFs
+gem 'rtesseract'       # for extracting text from images
+gem 'mini_magick'      # required by rtesseract
+gem 'rails_admin', '~> 3.1'
+
+
+
+gem "cssbundling-rails"
+gem "cssbundling-rails"

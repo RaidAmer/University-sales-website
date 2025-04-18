@@ -21,6 +21,13 @@
 #  fk_rails_...  (category_id => categories.id)
 #
 class Product < ApplicationRecord
+  belongs_to(
+    :category,
+    class_name:  'Category',
+    foreign_key: 'category_id',
+    inverse_of:  :products
+  )
+
   enum status: { Active: 0, Inactive: 1, Sold: 2 }
 
   has_one_attached :image

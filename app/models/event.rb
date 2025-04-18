@@ -15,10 +15,16 @@
 #  registered_users :text
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  user_id          :bigint
 #
 # Indexes
 #
 #  index_events_on_event_name  (event_name) UNIQUE
+#  index_events_on_user_id     (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
 class Event < ApplicationRecord
   serialize :registered_users, Array, coder: YAML
@@ -35,5 +41,9 @@ class Event < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 1,
 message: 'You must have at least one person in the event!' }
 
+  has_many :registrations, dependent: :destroy
+  has_many :registered_users, through: :registrations, source: :user
+
   has_one_attached :image
+  belongs_to :user
 end

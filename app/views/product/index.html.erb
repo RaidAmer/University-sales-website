@@ -2,7 +2,6 @@
 
 <div class="input-group mb-3">
   <input type="text" id="product-search" placeholder="Search products..." class="form-control">
-  <button id="search-button" class="btn btn-primary">Search</button>
 </div>
 
 <table class="table table-hover">
@@ -29,13 +28,11 @@
 
 <p id="no-products-message" style="display: none; color: red;">No matching products found.</p>
 
-<p><%= link_to "Create New product", new_category_product_path(@category) %></p>
 <p><%= link_to "Back", categories_path %></p>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("turbo:load", function () {
     const searchInput = document.getElementById("product-search");
-    const searchButton = document.getElementById("search-button");
     const productTableBody = document.getElementById("product-table-body");
     const noProductsMessage = document.getElementById("no-products-message");
 
@@ -55,12 +52,6 @@
       noProductsMessage.style.display = matchCount === 0 ? "block" : "none";
     }
 
-    searchButton.addEventListener("click", performSearch);
-    searchInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault(); 
-        performSearch();
-      }
-    });
+    searchInput.addEventListener("input", performSearch);
   });
 </script>

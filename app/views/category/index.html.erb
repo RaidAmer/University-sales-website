@@ -2,7 +2,6 @@
 
 <div class="input-group mb-3">
   <input type="text" id="category-search" placeholder="Search categories..." class="form-control">
-  <button id="category-search-button" class="btn btn-primary">Search</button>
 </div>
 
 <table class="table table-hover">
@@ -31,42 +30,37 @@
   </tbody>
 </table>
 
+<p>
+<% if user_signed_in? && current_user.admin? %>
+  <%= link_to "Create New category", new_category_path %>
+<% end %>
+</p>
+
 <p id="no-categories-message" style="display: none; color: red;">No matching categories found.</p>
 
 
-<p><%= link_to "Create New category", new_category_path %></p>
 <p><%= link_to "Back", home_path %></p>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("category-search");
-    const searchButton = document.getElementById("category-search-button");
 
     function performSearch() {
-      const query = searchInput.value.toLowerCase().trim();
-      const rows = document.querySelectorAll("#category-table-body tr");
-      let matchCount = 0;
+  const query = searchInput.value.toLowerCase().trim();
+  const rows = document.querySelectorAll("#category-table-body tr");
+  let matchCount = 0;
 
-      console.log("Query:", query);
-
-      rows.forEach(row => {
-        const nameCell = row.querySelector(".category-name");
-        const nameText = nameCell?.textContent.toLowerCase().trim() || "";
-        const isMatch = nameText.includes(query);
-        row.style.display = isMatch ? "" : "none";
-        if (isMatch) matchCount++;
-      });
-
-      document.getElementById("no-categories-message").style.display = matchCount === 0 ? "block" : "none";
-    }
-
-    searchButton.addEventListener("click", performSearch);
-
-    searchInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        performSearch();
-      }
-    });
+  rows.forEach(row => {
+    const nameCell = row.querySelector(".category-name");
+    const nameText = nameCell ? nameCell.innerText.toLowerCase().trim() : "";
+    console.log("NameText:", nameText, "| Query:", query);
+    const isMatch = nameText.includes(query);
+    row.style.display = isMatch ? "" : "none";
+    if (isMatch) matchCount++;
   });
+
+  document.getElementById("no-categories-message").style.display = matchCount === 0 ? "block" : "none";
+}
+    searchInput.addEventListener("input", performSearch);
+    });
 </script>

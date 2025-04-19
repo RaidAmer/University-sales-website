@@ -34,7 +34,7 @@ class Event < ApplicationRecord
   # For unknown reasons, Rails considers the current date as yesterday's date. To accommodate this,
   # I made it so that it accepts yesterday's date or after.
   validates :date, comparison: {
-    greater_than_or_equal_to: Date.yesterday,
+    greater_than_or_equal_to: Date.current,
     message:                  "You can't set a past date!"
   }
   validates :price,

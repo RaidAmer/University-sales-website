@@ -6,7 +6,7 @@
 #
 #  id               :bigint           not null, primary key
 #  capacity         :integer
-#  date             :datetime
+#  date             :date
 #  description      :text
 #  event_name       :string
 #  image            :string
@@ -31,8 +31,10 @@ class Event < ApplicationRecord
 
   validates :event_name, presence: true, uniqueness: true
   validates :location, :date, :price, :capacity, presence: true
+  # For unknown reasons, Rails considers the current date as yesterday's date. To accommodate this,
+  # I made it so that it accepts yesterday's date or after.
   validates :date, comparison: {
-    greater_than_or_equal_to: Time.current,
+    greater_than_or_equal_to: Date.yesterday,
     message:                  "You can't set a past date!"
   }
   validates :price,

@@ -1,5 +1,7 @@
 <h1><%= @product.name%></h1>
 
+<p>Sold by: <%= @product.user.first_name %> <%= @product.user.last_name %></p>
+
 <p> <%=@product.description%></p>
 <p><%= image_tag @product.image, width: 100, height: 100, alt: "#{@product.name} image" %></p>
 <p><%=@product.price%></p>

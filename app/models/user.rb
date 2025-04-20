@@ -30,6 +30,14 @@
 # app/models/user.rb
 
 class User < ApplicationRecord
+  has_many(
+    :products,
+    class_name:  'Product',
+    foreign_key: 'user_id',
+    inverse_of:  :user,
+    dependent:   :destroy
+  )
+
   # Devise modules with UUID authentication
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,

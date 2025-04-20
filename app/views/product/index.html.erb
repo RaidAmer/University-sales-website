@@ -1,7 +1,10 @@
 <h1><%= @category.name %> Store!</h1>
 
+<div class="input-group mb-3">
+  <input type="text" id="product-search" placeholder="Search products..." class="form-control">
+</div>
+
 <table class="table table-hover">
- 
   <thead class="table-dark">
     <tr>
       <th>Name</th>
@@ -9,24 +12,46 @@
       <th>Image</th>
     </tr>
   </thead>
- 
-  <tbody>
+
+  <tbody id="product-table-body">
     <% @products.each do |product| %>
       <tr>
-        <td><%= link_to product.name, category_product_path(@category, product) %></td>
+        <td class="product-name">
+          <%= link_to product.name, category_product_path(@category, product) %>
+        </td>
         <td><%= product.price %></td>
         <td><%= image_tag product.image, width: 100, height: 100, alt: "#{product.name} image" %></td>
       </tr>
     <% end %>
   </tbody>
- 
 </table>
 
-
-
-
-<p>
-  <%= link_to "Create New product", new_category_product_path(@category) %>
-</p>
+<p id="no-products-message" style="display: none; color: red;">No matching products found.</p>
 
 <p><%= link_to "Back", categories_path %></p>
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    const searchInput = document.getElementById("product-search");
+    const productTableBody = document.getElementById("product-table-body");
+    const noProductsMessage = document.getElementById("no-products-message");
+
+    function performSearch() {
+      const query = searchInput.value.toLowerCase().trim();
+      const rows = productTableBody.querySelectorAll("tr");
+      let matchCount = 0;
+
+      rows.forEach(row => {
+        const firstCell = row.querySelector(".product-name");
+        const nameText = firstCell?.textContent.toLowerCase().trim() || "";
+        const isMatch = nameText.includes(query);
+        row.style.display = isMatch ? "" : "none";
+        if (isMatch) matchCount++;
+      });
+
+      noProductsMessage.style.display = matchCount === 0 ? "block" : "none";
+    }
+
+    searchInput.addEventListener("input", performSearch);
+  });
+</script>

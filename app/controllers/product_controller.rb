@@ -22,9 +22,10 @@ class ProductController < ApplicationController
   def create
     @category = Category.find(params[:category_id])
     @product = @category.products.build(params.require(:product).permit(:name, :description, :price, :status, :image))
+    @product.user = current_user
     if @product.save
       flash[:success] = 'New Product successfully added!'
-      redirect_to category_products_url(@category)
+      redirect_to seller_dashboard_url
     else
       flash.now[:error] = 'Product Creation failed'
       render :new, status: :unprocessable_entity

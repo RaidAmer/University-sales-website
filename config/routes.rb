@@ -62,4 +62,7 @@ Rails.application.routes.draw do
     post 'register', on: :member
   end
   post 'events/:id/unregister', to: 'events#unregister', as: 'unregister_event'
+
+  get 'checkout_orders_page', to: 'checkout_orders#index', as: 'checkout_orders_index'
+  get 'checkout_orders/:id', to: 'checkout_orders#show', as: 'checkout_order'
 end

@@ -1,0 +1,19 @@
+<h1><strong>Order #<%= @checkout_order.id %></strong></h1>
+
+<p><strong>Date:</strong> <%= @checkout_order.order_date.strftime("%B %d, %Y") %></p>
+
+<p><strong>Status:</strong> <%= @checkout_order.status %></p>
+
+<p><strong>Total:</strong> <%= number_to_currency(@checkout_order.total_price) %></p>
+
+<p>Number of items: <%= @checkout_order.cart_items.count %></p>
+
+<ul>
+  <% @checkout_order.cart_items.includes(:product).each do |item| %>
+    <li>
+      <%= item.product.name %> — <%= item.quantity %> x <%= number_to_currency(item.product.price) %>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to "My Orders", checkout_orders_index_path, class: 'btn btn-primary' %>

@@ -27,9 +27,9 @@
 #
 # app/models/user.rb
 
-# app/models/user.rb
-
 class User < ApplicationRecord
+  attr_accessor :uuid_confirmation
+
   has_many(
     :products,
     class_name:  'Product',
@@ -44,7 +44,7 @@ class User < ApplicationRecord
          authentication_keys: [:uuid]
 
   # UUID-based login
-  validates :uuid, presence: true, uniqueness: true
+  validates :uuid, presence: { message: "must be provided" }, confirmation: true, uniqueness: true
  
 validates :approved, inclusion: { in: [true, false] }
 
@@ -82,6 +82,7 @@ end
   validates :last_name, presence: true
   validates :password, presence: true, on: :create
   validate :university_id_presence_unless_admin
+  validate :uuid_confirmation_matches_extracted_uuid
 
   private
   
@@ -91,4 +92,24 @@ end
       errors.add(:university_id, "must be uploaded")
       end
     end
-  end
+
+    def uuid_confirmation_matches_extracted_uuid
+      return if uuid_confirmation.blank? || university_id.blank?
+
+      extracted_uuid = extract_uuid_from_uploaded_file
+      if extracted_uuid.nil?
+        errors.add(:university_id, "must be a valid file to extract UUID")
+      elsif uuid_confirmation.strip != extracted_uuid.strip
+        errors.add(:uuid_confirmation, "does not match the uploaded ID")
+      end
+    end
+
+    def extract_uuid_from_uploaded_file
+      return unless university_id.attached?
+      tempfile = university_id.blob.service.send(:path_for, university_id.key)
+      content = File.read(tempfile)
+      content.match(/(U\d{7,})/)&. 
+    rescue
+      nil
+    end
+end

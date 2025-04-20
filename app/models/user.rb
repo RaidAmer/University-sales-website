@@ -41,6 +41,8 @@ class User < ApplicationRecord
   validates :approved, inclusion: { in: [true, false] }
 
   has_one_attached :avatar
+  has_many :checkout_orders
+
 
   def profile_completed?
     bio.present? && avatar.attached?

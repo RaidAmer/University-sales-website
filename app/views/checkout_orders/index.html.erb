@@ -8,6 +8,8 @@
             <th>Date</th>
             <th>Status</th>
             <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
 
@@ -19,6 +21,21 @@
                 <td><%= checkout_order.order_date.strftime("%B %d, %Y") %></td>
                 <td><%= checkout_order.status %></td>
                 <td><%= link_to "View Order", checkout_order_path(checkout_order), class: 'btn btn-primary' %></td>
+                <td><% if checkout_order.status == 'Pending' %>
+                        <%= link_to "Delivered", delivered_checkout_order_path(checkout_order), 
+                            method: :patch, 
+                            data: { confirm: "Are you sure your order was delivered?" },
+                            class: 'btn btn-secondary' %>
+                    <% end %>
+                </td>
+                <td>
+                    <% if checkout_order.status == 'Pending' %>
+                        <%= link_to "Cancel", cancel_checkout_order_path(checkout_order), 
+                            method: :patch, 
+                            data: { confirm: "Are you sure you want to cancel this order?" },
+                            class: 'btn btn-danger' %>
+                    <% end %>
+                </td>
             </tr>
         <% end %>
     </tbody>

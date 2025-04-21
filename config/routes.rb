@@ -29,7 +29,12 @@ Rails.application.routes.draw do
   resource :cart, only: [:show]
   resources :cart_items, only: %i[create destroy]
 
-  resources :checkout_orders, only: [:create]
+  resources :checkout_orders, only: %i[index show create] do
+    member do
+      patch :delivered
+      patch :cancel
+    end
+  end
   resources :payment_transactions, only: %i[new create]
 
   # Custom flow after registration
@@ -63,6 +68,6 @@ Rails.application.routes.draw do
   end
   post 'events/:id/unregister', to: 'events#unregister', as: 'unregister_event'
 
-  get 'checkout_orders_page', to: 'checkout_orders#index', as: 'checkout_orders_index'
-  get 'checkout_orders/:id', to: 'checkout_orders#show', as: 'checkout_order'
+  # get 'checkout_orders_page', to: 'checkout_orders#index', as: 'checkout_orders_index'
+  # get 'checkout_orders/:id', to: 'checkout_orders#show', as: 'checkout_order'
 end

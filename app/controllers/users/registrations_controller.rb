@@ -21,10 +21,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     #  Extract UUID from form and PDF
     typed_uuid = params[:user][:uuid_confirmation].to_s.strip
-    extracted_uuid = extract_uuid_from_file(params[:user][:university_id].tempfile, params[:user][:university_id].content_type)
+    extracted_uuid = nil
+    if params[:user][:university_id].present?
+      extracted_uuid = extract_uuid_from_file(params[:user][:university_id].tempfile, params[:user][:university_id].content_type)
+    end
 
     # 🔒 Validate UUID match
-    if typed_uuid.blank? || extracted_uuid.blank? || typed_uuid != extracted_uuid
+    if typed_uuid.blank? || extracted_uuid.blank?
+      flash.now[:alert] = "❌ Please make sure to enter your UUID and upload a valid ID file."
+      render :new, status: :unprocessable_entity and return
+    elsif typed_uuid != extracted_uuid
       flash.now[:alert] = "❌ UUID mismatch. Please enter the correct UUID shown on your uploaded ID."
       render :new, status: :unprocessable_entity and return
     end

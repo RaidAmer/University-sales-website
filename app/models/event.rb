@@ -35,7 +35,7 @@ class Event < ApplicationRecord
   # I made it so that it accepts yesterday's date or after.
   validates :date, comparison: {
     greater_than_or_equal_to: Date.current,
-    message:                  "You can't set a past date!"
+    message:                  "You can't set a past date or current date!"
   }
   validates :price,
             numericality: { greater_than_or_equal_to: 0.00, message: "You can't set a negative number as the price!" }

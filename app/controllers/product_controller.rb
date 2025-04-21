@@ -1,6 +1,6 @@
+# frozen_string_literal: true
+
 class ProductController < ApplicationController
- 
-  
   def index
     @category = Category.find(params[:category_id])
     @products = @category.products
@@ -12,7 +12,7 @@ class ProductController < ApplicationController
     @product = @category.products.find(params[:id])
     render :show
   end
-  
+
   def new
     @category = Category.find(params[:category_id])
     @product = Product.new
@@ -31,21 +31,16 @@ class ProductController < ApplicationController
     end
   end
 
-
-  before_action :check_approval, only: [:index, :show, :new, :create]
+  before_action :check_approval, only: %i[index show new create]
 
   def check_approval
     unless user_signed_in?
-      redirect_to categories_path, alert: "You must log in or create an account to view this product."
+      redirect_to categories_path, alert: 'You must log in or create an account to view products.'
       return
     end
-  
-    unless current_user.approved?
-      redirect_to root_path, alert: "You must be approved to view this product."
-    end
+
+    return if current_user.approved?
+
+    redirect_to root_path, alert: 'You must be approved to view this product.'
   end
-  
-  
-  
-  
 end

@@ -1,4 +1,3 @@
-
 require "open-uri"
 require "marcel"
 
@@ -14,8 +13,8 @@ require "marcel"
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-user1 = User.create!(
-  uuid: "U00828281",
+user1 = User.find_or_initialize_by(uuid: "U00828281")
+user1.assign_attributes(
   password: "123456",
   password_confirmation: "123456",
   first_name: "Ilham",
@@ -24,6 +23,7 @@ user1 = User.create!(
   approved: true,
   admin: true
 )
+user1.save!
 
 categories = [
   {
@@ -49,11 +49,12 @@ categories = [
 ]
 
 categories.each do |cat_data|
-  category = Category.create!(
-    name: cat_data[:name],
-    description: cat_data[:description],
-    is_featured: cat_data[:is_featured]
-  )
+  category = Category.find_or_create_by!(
+    name: cat_data[:name]
+  ) do |c|
+    c.description = cat_data[:description]
+    c.is_featured = cat_data[:is_featured]
+  end
 
   # Attach category image
   cat_image_path = Rails.root.join("app/assets/images/categories/#{cat_data[:icon]}")

@@ -32,9 +32,7 @@ class ProductController < ApplicationController
     end
   end
 
-
   before_action :check_approval, only: %i[index show new create]
-
 
   def check_approval
     unless user_signed_in?

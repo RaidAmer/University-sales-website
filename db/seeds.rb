@@ -21,9 +21,8 @@ categories = [
 
     icon:        'Art.jpg',
     products:    [
-      { name: 'Face', price: '12', image: 'Face.jpg', status: 'Active', description: 'A picture of a face!', user: 'user1' },
-      { name: 'Paintbrushes', price: '8', image: 'Paintbrushes.jpg', status: 'Active',
-description: 'Some Paintbrushes', user: 'user1' }]
+      { name: 'Face', price: '12', image: 'Face.jpg', status: 'Active', description: 'A picture of a face!', user: user1 },
+      { name: 'Paintbrushes', price: '8', image: 'Paintbrushes.jpg', status: 'Active', description: 'Some Paintbrushes', user: user1 }]
   },
   {
     name:        'Crafts',
@@ -31,8 +30,8 @@ description: 'Some Paintbrushes', user: 'user1' }]
     is_featured: false,
     icon:        'Craft.jpg',
     products:    [
-      { name: 'Coffee cup', price: '22', image: 'Coffee.webp', status: 'Active', description: 'A cup to drink out of', user: 'user1' },
-      { name: 'Ring', price: '150', image: 'Ring.webp', status: 'Active', description: 'A nice ring', user: 'user1' }
+      { name: 'Coffee cup', price: '22', image: 'Coffee.webp', status: 'Active', description: 'A cup to drink out of', user: user1 },
+      { name: 'Ring', price: '150', image: 'Ring.webp', status: 'Active', description: 'A nice ring', user: user1 }
 
     ]
   }

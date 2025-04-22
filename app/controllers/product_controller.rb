@@ -31,10 +31,8 @@ class ProductController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
-
+  
   before_action :check_approval, only: %i[index show new create]
-
 
   def check_approval
     unless user_signed_in?

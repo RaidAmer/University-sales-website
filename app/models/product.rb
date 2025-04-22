@@ -33,7 +33,6 @@ class Product < ApplicationRecord
     inverse_of:  :products
   )
 
-
   belongs_to(
     :user,
     class_name:  'User',

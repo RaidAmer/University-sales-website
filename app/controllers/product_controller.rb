@@ -31,12 +31,12 @@ class ProductController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-  
-  before_action :check_approval, only: %i[index show new create]
+
+  before_action :check_approval, only: %i[show new create]
 
   def check_approval
     unless user_signed_in?
-      redirect_to categories_path, alert: 'You must log in or create an account to view this product.'
+      redirect_to categories_path, alert: 'You must log in or create an account to view products.'
       return
     end
 

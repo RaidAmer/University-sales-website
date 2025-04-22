@@ -83,6 +83,19 @@ class EventsController < ApplicationController
     redirect_to @event
   end
 
+  before_action :check_approval, only: %i[show new edit create update destroy register unregister]
+
+  def check_approval
+    unless user_signed_in?
+      redirect_to events_path, alert: 'You must log in to create events!'
+      return
+    end
+
+    return if current_user.approved?
+
+    redirect_to root_path, alert: 'You must be approved to view this event.'
+  end
+
   private
 
   def authorize_user!

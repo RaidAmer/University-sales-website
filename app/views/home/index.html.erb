@@ -1,13 +1,11 @@
 <h1>Welcome!</h1>
 
-<p>
-<%= link_to "Store", categories_path %>
-</p>
-
-<p>
-  <%= link_to "Create Account", new_user_path, class: "btn btn-success" %>
-</p>
-
+<div class="d-flex gap-2 mt-3">
+  <p><%= link_to "Store", categories_path, class: "btn btn-primary" %></p>
+  <% unless user_signed_in? %>
+    <p><%= link_to "Create Account", new_user_path, class: "btn btn-success" %></p>
+  <% end %>
+</div>
 <% if user_signed_in? && current_user.approved? && !current_user.profile_completed? %>
   <div class="alert alert-info mt-4 text-center shadow-sm" role="alert">
     🎯 <strong>Complete your profile</strong> to enhance your experience.

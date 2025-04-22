@@ -26,6 +26,9 @@
   </tbody>
 </table>
 
+
+<p><%= link_to "Create New product", new_category_product_path(@category) %></p>
+
 <p id="no-products-message" style="display: none; color: red;">No matching products found.</p>
 
 <p><%= link_to "Back", categories_path %></p>
@@ -51,6 +54,7 @@
 
       noProductsMessage.style.display = matchCount === 0 ? "block" : "none";
     }
+
 
     searchInput.addEventListener("input", performSearch);
   });

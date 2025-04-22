@@ -44,19 +44,24 @@ class User < ApplicationRecord
          authentication_keys: [:uuid]
 
   # UUID-based login
+
   validates :uuid, presence: { message: "must be provided" }, confirmation: true, uniqueness: true
  
 validates :approved, inclusion: { in: [true, false] }
 
-has_one_attached :avatar
 
-def profile_completed?
-  bio.present? && avatar.attached?
-end
+  validates :approved, inclusion: { in: [true, false] }
+
+  has_one_attached :avatar
+
+  def profile_completed?
+    bio.present? && avatar.attached?
+  end
+
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     uuid = conditions.delete(:uuid)
-    where(conditions).where(["uuid = :value", { value: uuid }]).first
+    where(conditions).where(['uuid = :value', { value: uuid }]).first
   end
 
   # Disable email requirement
@@ -73,7 +78,12 @@ end
     self.approved ||= false
     self.admin ||= false
   end
-  
+
+  # Event registration.
+  has_many :events
+  has_many :registrations
+  has_many :registered_events, through: :registrations, source: :event
+
   # Active Storage attachment
   has_one_attached :university_id
 
@@ -85,6 +95,7 @@ end
   validate :uuid_confirmation_matches_extracted_uuid
 
   private
+
   
     def university_id_presence_unless_admin
       return if admin? # Skip if it's an admin user
@@ -113,3 +124,4 @@ end
       nil
     end
 end
+

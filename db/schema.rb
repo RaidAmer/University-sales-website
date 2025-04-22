@@ -10,7 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_19_162959) do
+
+ActiveRecord::Schema[7.1].define(version: 2025_04_19_031041) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,6 +77,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_19_162959) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "events", force: :cascade do |t|
+    t.string "event_name"
+    t.string "location"
+    t.date "date"
+    t.float "price"
+    t.integer "capacity"
+    t.text "registered_users"
+    t.text "description"
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["event_name"], name: "index_events_on_event_name", unique: true
+    t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
   create_table "payment_transactions", force: :cascade do |t|
     t.float "amount"
     t.string "method"
@@ -100,6 +118,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_19_162959) do
     t.index ["user_id"], name: "index_products_on_user_id"
   end
 
+  create_table "registrations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_registrations_on_event_id"
+    t.index ["user_id"], name: "index_registrations_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -123,6 +150,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_19_162959) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
+  add_foreign_key "events", "users"
   add_foreign_key "products", "categories"
+
+  add_foreign_key "registrations", "events"
+  add_foreign_key "registrations", "users"
+
   add_foreign_key "products", "users"
+
 end

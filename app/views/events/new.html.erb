@@ -1,0 +1,17 @@
+<h1>Create New Event</h1>
+
+<%= bootstrap_form_with(model: @event, local: true, html: { multipart: true }, url: events_path, method: :post, data: { turbo: false }) do |f| %>
+
+    <%= f.text_field :event_name %>
+    <%= f.text_field :location %>
+    <%= f.text_field :price %>
+    <%= f.date_field :date %>
+    <%= f.text_field :capacity %>
+    <%= f.text_area :description %>
+    <%= f.file_field :image %>
+
+    <div class="d-flex gap-2 mt-3">
+        <%= f.submit 'Create Event', class: 'btn btn-primary' %>
+        <%= link_to "Back to Events", events_path, class: "btn btn-secondary" %>
+    </div>
+<% end %>

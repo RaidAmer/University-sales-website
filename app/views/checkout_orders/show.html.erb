@@ -1,0 +1,11 @@
+<h1><strong>Order #<%= @checkout_order.id %></strong></h1>
+
+<p><strong>Date:</strong> <%= @checkout_order.order_date.strftime("%B %d, %Y") %></p>
+
+<p><strong>Time:</strong> <%= @checkout_order.order_date.strftime("%I:%M %p") %></p>
+
+<p><strong>Status:</strong> <%= @checkout_order.status %></p>
+
+<p><strong>Total:</strong> <%= number_to_currency(@checkout_order.total_price) %></p>
+
+<%= link_to "My Orders", checkout_orders_path, class: 'btn btn-primary' %>

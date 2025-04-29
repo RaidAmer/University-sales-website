@@ -1,66 +1,97 @@
-<h1>Category!</h1>
+<div class="container my-5">
+  <h1 class="text-center mb-4">UofM Arts and Craft</h1>
 
-<div class="input-group mb-3">
-  <input type="text" id="category-search" placeholder="Search categories..." class="form-control">
+  <div class="mb-4" style="position: relative;">
+  <img id="cat-image" src="<%= asset_path('Cat on his back.png') %>" alt="Hanging Cat"
+       style="position: absolute; top: -45px; left: 10px; width: 60px; height: auto; z-index: 10; pointer-events: none; animation: swing 2s ease-in-out infinite;">
+
+  <div class="input-group">
+    <input type="text" id="category-search" placeholder="Search categories..." class="form-control rounded-pill px-4">
+  </div>
 </div>
 
-<table class="table table-hover">
-  <thead class="table-dark">
-    <tr>
-      <th>Name</th>
-      <th>Image</th>
-    </tr>
-  </thead>
 
-  <tbody id="category-table-body">
+  <div class="row" id="category-card-container">
     <% @categories.each do |category| %>
-      <tr>
-        <td class="category-name">
-          <%= link_to category.name, category_products_path(category) %>
-        </td>
-        <td>
-          <% if category.icon.present? %>
-            <%= image_tag category.icon, width: 100, height: 100, alt: "#{category.name} image" %>
-          <% else %>
-            <span>No image available</span>
-          <% end %>
-        </td>
-      </tr>
+      <div class="col-md-4 mb-4 category-card">
+        <div class="card h-100 shadow-sm text-center">
+          <div class="card-body d-flex flex-column align-items-center">
+            <% if category.icon.present? %>
+              <%= image_tag category.icon, alt: "#{category.name} image", style: "max-height: 150px; max-width: 100%; object-fit: contain;", class: "mb-3" %>
+            <% else %>
+              <div class="bg-light d-flex align-items-center justify-content-center mb-3" style="height: 150px; width: 100%;">
+                <span>No image available</span>
+              </div>
+            <% end %>
+
+            <h5 class="card-title category-name mb-0">
+              <%= link_to category.name, category_products_path(category), class: "stretched-link text-decoration-none" %>
+            </h5>
+          </div>
+        </div>
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
 
-<p>
-<% if user_signed_in? && current_user.admin? %>
-  <%= link_to "Create New category", new_category_path %>
-<% end %>
-</p>
+  <% if user_signed_in? && current_user.admin? %>
+    <div class="text-end mt-3">
+      <%= link_to "Create New Category", new_category_path, class: "btn btn-primary rounded-pill px-4" %>
+    </div>
+  <% end %>
 
-<p id="no-categories-message" style="display: none; color: red;">No matching categories found.</p>
+  <p id="no-categories-message" class="text-danger mt-3 text-center" style="display: none;">No matching categories found.</p>
+</div>
 
+<style>
+  .input-group {
+    position: relative;
+  }
 
-<p><%= link_to "Back", home_path %></p>
+  #cat-image {
+    pointer-events: none;
+    animation: swing 2s ease-in-out infinite;
+  }
+
+  @keyframes swing {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-10px);
+    }
+    50% {
+      transform: translateX(0);
+    }
+    75% {
+      transform: translateX(10px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+</style>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("category-search");
+    const cards = document.querySelectorAll(".category-card");
+    const noCategoriesMessage = document.getElementById("no-categories-message");
 
     function performSearch() {
-  const query = searchInput.value.toLowerCase().trim();
-  const rows = document.querySelectorAll("#category-table-body tr");
-  let matchCount = 0;
+      const query = searchInput.value.toLowerCase().trim();
+      let matchCount = 0;
 
-  rows.forEach(row => {
-    const nameCell = row.querySelector(".category-name");
-    const nameText = nameCell ? nameCell.innerText.toLowerCase().trim() : "";
-    console.log("NameText:", nameText, "| Query:", query);
-    const isMatch = nameText.includes(query);
-    row.style.display = isMatch ? "" : "none";
-    if (isMatch) matchCount++;
-  });
+      cards.forEach(card => {
+        const nameEl = card.querySelector(".category-name");
+        const nameText = nameEl ? nameEl.textContent.toLowerCase().trim() : "";
+        const isMatch = nameText.includes(query);
+        card.style.display = isMatch ? "" : "none";
+        if (isMatch) matchCount++;
+      });
 
-  document.getElementById("no-categories-message").style.display = matchCount === 0 ? "block" : "none";
-}
+      noCategoriesMessage.style.display = matchCount === 0 ? "block" : "none";
+    }
+
     searchInput.addEventListener("input", performSearch);
-    });
+  });
 </script>

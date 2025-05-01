@@ -6,7 +6,7 @@
 
 <p><strong>Status:</strong> <%= @checkout_order.status %></p>
 
-<p><strong>Total:</strong> <%= number_to_currency(@checkout_order.total_price) %></p>
+<p><strong>Subtotal:</strong> <%= number_to_currency(@checkout_order.total_price) %></p>
 <% tax         = (@checkout_order.total_price * 0.07).round(2) %>
 <% grand_total = (@checkout_order.total_price + tax).round(2) %>
 

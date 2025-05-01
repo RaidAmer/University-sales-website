@@ -17,7 +17,7 @@
         <% @checkout_orders.each do |checkout_order| %>
             <tr>
                 <td><%= checkout_order.id %></td>
-                <td><%= number_to_currency(checkout_order.total_price) %></td>
+                <td><%= number_to_currency((checkout_order.total_price * 1.07).round(2)) %></td>
                 <td><%= checkout_order.order_date.strftime("%B %d, %Y") %></td>
                 <td><%= checkout_order.status %></td>
                 <td><%= link_to "View Order", checkout_order_path(checkout_order), class: 'btn btn-primary' %></td>

@@ -10,12 +10,26 @@ class PaymentTransactionsController < ApplicationController
     end
 
     @payment_transaction = PaymentTransaction.new
+    @total = @checkout_order.total_price
+    @cart_items = current_cart.present? ? current_cart.cart_items : []
+    @payment_transaction = PaymentTransaction.new
   end
 
   def create
     @payment_transaction = PaymentTransaction.new(payment_params)
     @payment_transaction.timestamp = DateTime.now
     @payment_transaction.success = true
+
+    unless ['Campus', 'Apple pay'].include?(payment_params[:method])
+      card_valid = params[:card_number].present? &&
+                   params[:expiration_date].present? &&
+                   params[:cvv].present?
+
+      unless card_valid
+        flash.now[:error] = 'Please complete all card fields.'
+        return render :new
+      end
+    end
 
     if @payment_transaction.save
       CartItem.where(cart_id: current_cart.id).destroy_all if current_cart.present?

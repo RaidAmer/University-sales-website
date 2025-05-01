@@ -27,7 +27,9 @@ Rails.application.routes.draw do
   get 'home', to: 'home#index', as: 'home'
 
   resource :cart, only: [:show]
-  resources :cart_items, only: %i[create destroy]
+  resources :cart_items, only: %i[create destroy] do
+    patch :update_quantity, on: :member
+  end
 
   resources :checkout_orders, only: %i[index show create] do
     member do
@@ -52,10 +54,8 @@ Rails.application.routes.draw do
   get 'categories/new', to: 'category#new', as: 'new_category'
   get 'categories/:id', to: 'category#show', as: 'category'
 
-
   get 'seller_dashboard', to: 'seller_dashboard#index', as: 'seller_dashboard'
   get 'product_dashboard/:id', to: 'seller_dashboard#show', as: 'product_dashboard'
-  
 
   get 'admin/users', to: 'admin#users', as: 'custom_admin_users'
   patch 'admin/users/:id/approve', to: 'admin#approve', as: 'approve_user'

@@ -1,11 +1,162 @@
 <h1>Payment</h1>
 
-<p>Total to Pay: $<%= @checkout_order.total_price %></p>
+<div class="row">
 
-<%= form_with model: @payment_transaction, url: payment_transactions_path, method: :post do |f| %>
-  <%= hidden_field_tag :amount, @checkout_order.total_price %>
-  <%= hidden_field_tag :user_id, @checkout_order.user_id %>
-  <%= hidden_field_tag :checkout_order_id, @checkout_order.id %>
-  <%= f.select :method, ["Credit", "Campus", "Debit", "Apple Pay"], {}, class: "form-control" %>
-  <%= f.submit "Pay", class: "btn btn-success" %>
-<% end %>
+  <div class="col-md-8">
+    <%= form_with model: @payment_transaction, url: payment_transactions_path, local: true do |f| %>
+      <div class="mb-3">
+        <%= f.label :method, "Select Payment Method" %>
+        <%= f.select :method, ['Credit', 'Debit', 'Campus'], {}, class: "form-control", id: "payment-method" %>
+      </div>
+
+      <div id="card-fields">
+        <div class="mb-3">
+          <%= label_tag :card_number, "Card Number" %>
+          <%= text_field_tag :card_number, nil, name: "card_number", class: "form-control",
+                pattern: "\\d{4}[\\s]?\\d{4}[\\s]?\\d{4}[\\s]?\\d{4}",
+                placeholder: "1234 5678 9012 3456",
+                title: "Enter a valid 16-digit card number",
+                required: true %>
+        </div>
+
+        <div class="mb-3">
+          <%= label_tag :expiration_date, "Expiration Date (MM/YY)" %>
+          <%= text_field_tag :expiration_date, nil, name: "expiration_date", id: "expiration_date", class: "form-control",
+                pattern: "\\d{2}/\\d{2}", placeholder: "MM/YY", required: true %>
+          <small id="exp-error" class="text-danger d-none">
+            Expiration date must be 2026 or later.
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <%= label_tag :cvv, "CVV" %>
+          <%= password_field_tag :cvv, nil, name: "cvv", class: "form-control",
+                pattern: "\\d{3,4}", required: true %>
+        </div>
+      </div>
+
+      <div class="mb-3 d-none" id="uid-field">
+        <%= label_tag :uid, "University ID Number (UID)" %>
+        <%= text_field_tag :uid, nil, name: "uid", class: "form-control", placeholder: "Enter UID" %>
+      </div>
+
+      <%= f.hidden_field :amount, value: (@total * 1.07).round(2) %>
+      <%= f.hidden_field :checkout_order_id, value: @checkout_order_id %>
+
+      <%= f.submit "Pay", class: "btn btn-success" %>
+    <% end %>
+  </div>
+
+    <div class="col-md-4">
+    <% tax         = (@total * 0.07).round(2) %>
+    <% grand_total = (@total + tax).round(2) %>
+    <% item_count  = @cart_items.sum(&:quantity) %>
+
+    <div class="card p-3 mb-4" style="position:sticky; top:2rem;">
+      <nav aria-label="Checkout progress" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">Cart</li>
+          <li class="breadcrumb-item active" aria-current="page">Payment</li>
+          <li class="breadcrumb-item">Confirm</li>
+        </ol>
+      </nav>
+
+      <h4 class="mb-3">Order Summary</h4>
+
+      <p class="d-flex justify-content-between">
+        <span>Items:</span>
+        <span><%= item_count %></span>
+        <span>Subtotal:</span>
+        <span>$<%= '%.2f' % @total %></span>
+      </p>
+
+      <p class="d-flex justify-content-between">
+        <span>Tax (7%):</span>
+        <span>$<%= '%.2f' % tax %></span>
+      </p>
+
+      <hr>
+
+      <p class="d-flex justify-content-between fw-bold">
+        <span>Total:</span>
+        <span>$<%= '%.2f' % grand_total %></span>
+      </p>
+    </div>
+  </div>
+
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    const form         = document.querySelector("form");
+    const methodSelect = document.getElementById("payment-method");
+    const cardFields   = document.getElementById("card-fields");
+    const cardField    = document.querySelector("[name='card_number']");
+    const expField     = document.querySelector("[name='expiration_date']");
+    const cvvField     = document.querySelector("[name='cvv']");
+    const expError     = document.getElementById("exp-error");
+    const uidField     = document.getElementById("uid-field");
+    const uidInput     = document.querySelector("[name='uid']");
+
+    function toggleFields() {
+      const m = methodSelect.value;
+      const isCard   = m === "Credit" || m === "Debit";
+      const isCampus = m === "Campus";
+
+      cardFields.style.display = isCard ? "block" : "none";
+      uidField.classList.toggle("d-none", !isCampus);
+
+      cardField.required = isCard;
+      expField.required  = isCard;
+      cvvField.required  = isCard;
+      uidInput.required  = isCampus;
+    }
+
+    toggleFields();
+    methodSelect.addEventListener("change", toggleFields);
+
+    function isExpirationValid(v) {
+      const m = v.trim().match(/^(\d{2})\/(\d{2})$/);
+      if (!m) return false;
+      const mm = parseInt(m[1],10),
+            yy = parseInt("20"+m[2],10);
+      return yy > 2025 && mm >=1 && mm <=12;
+    }
+
+    expField.addEventListener("input", ()=>{
+      if (isExpirationValid(expField.value)) {
+        expError.classList.add("d-none");
+        expField.setCustomValidity("");
+      } else {
+        expError.classList.remove("d-none");
+        expField.setCustomValidity("Invalid expiration date");
+      }
+    });
+
+    form.addEventListener("submit", function(e){
+      const m = methodSelect.value;
+      if (m==="Credit"||m==="Debit") {
+        const card = cardField.value.trim().replace(/\s+/g,""),
+              exp  = expField.value.trim(),
+              cvv  = cvvField.value.trim();
+
+        if (!/^\d{16}$/.test(card)) {
+          alert("Invalid card number. Must be 16 digits.");
+          e.preventDefault(); return;
+        }
+        if (!isExpirationValid(exp)) {
+          expError.classList.remove("d-none");
+          expField.reportValidity();
+          e.preventDefault(); return;
+        }
+        if (!/^\d{3,4}$/.test(cvv)) {
+          alert("Invalid CVV."); e.preventDefault(); return;
+        }
+      } else if (m==="Campus") {
+        if (uidInput.value.trim().length<5) {
+          alert("Please enter a valid UID number.");
+          e.preventDefault(); return;
+        }
+      }
+    });
+  });
+</script>

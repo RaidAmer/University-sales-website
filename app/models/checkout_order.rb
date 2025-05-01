@@ -13,7 +13,10 @@
 #  user_id     :integer
 #
 class CheckoutOrder < ApplicationRecord
-  has_many :cart_items
+  has_many :order_items,
+           class_name: "CartItem",
+           foreign_key: "checkout_order_id",
+           dependent: :destroy
 
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }
   validates :order_date, presence: true

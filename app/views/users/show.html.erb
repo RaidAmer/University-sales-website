@@ -4,4 +4,36 @@
 <p><strong>Last Name:</strong> <%= @user.last_name %></p>
 <p><strong>Email:</strong> <%= @user.email %></p>
 
-<%= link_to "Edit Profile", edit_profile_path, class: "btn btn-primary" %>
+<div class="dropdown d-inline-block ms-2">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="profile-theme-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+    Customize
+  </button>
+  <div class="dropdown-menu p-3" aria-labelledby="profile-theme-dropdown" style="min-width: 200px;">
+    <%= form_with model: (@user.preference || @user.build_preference), url: preference_path(@user.preference || @user.build_preference), method: :patch, local: true, html: { id: "profile-prefs-form" } do |f| %>
+      <div class="mb-2">
+        <%= f.label :theme, "Theme" %>
+        <%= f.select :theme, options_for_select(["light-theme", "dark-theme", "blue-theme", "orange-theme"], @user.preference&.theme), {}, class: "form-select", id: "profile-theme-selector" %>
+      </div>
+      <%= f.submit "Save", class: "btn btn-primary btn-sm" %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const themes   = ["light-theme", "dark-theme", "blue-theme", "orange-theme"];
+    const themeSel = document.getElementById("profile-theme-selector");
+    if (!themeSel) return;
+
+    function applyPrefs() {
+      document.body.classList.remove(...themes);
+      document.body.classList.add(themeSel.value);
+    }
+
+    // Apply on load
+    applyPrefs();
+
+    // Live preview on change
+    themeSel.addEventListener("change", applyPrefs);
+  });
+</script>

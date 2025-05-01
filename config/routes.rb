@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  resource :preferences, only: %i[edit update]
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   resource :profile, only: %i[show edit update]
 
@@ -54,9 +55,12 @@ Rails.application.routes.draw do
   get 'categories/:id', to: 'category#show', as: 'category'
 
   get 'seller_dashboard', to: 'seller_dashboard#index', as: 'seller_dashboard'
+  get 'preferences/customize', to: 'preferences#edit', as: 'customize_preferences'
+  patch 'preferences/customize', to: 'preferences#update', as: 'preference'
   get 'product_dashboard/:id', to: 'seller_dashboard#show', as: 'product_dashboard'
 
   get 'admin/users', to: 'admin#users', as: 'custom_admin_users'
+  get 'admin/panel', to: 'admin#users', as: 'admin_dashboard'
   patch 'admin/users/:id/approve', to: 'admin#approve', as: 'approve_user'
 
   get 'events', to: 'events#index', as: 'events'

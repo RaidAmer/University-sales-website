@@ -13,7 +13,8 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <% theme = current_user&.preference&.theme %>
+  <body class="<%= theme.presence || 'light-theme' %>">
     <%= render 'shared/navbar' %>
 
     <%= render 'shared/flash' %> 

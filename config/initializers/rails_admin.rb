@@ -51,4 +51,25 @@ RailsAdmin.config do |config|
     # history_index
     # history_show
   end
+  config.model 'User' do
+    list do
+      field :email
+      field :first_name
+      field :last_name
+      field :avatar do
+        pretty_value do
+          if bindings[:object].avatar.attached?
+            bindings[:view].tag(:img, {
+              src: Rails.application.routes.url_helpers.rails_blob_path(bindings[:object].avatar, only_path: true),
+              style: 'height: 40px; border-radius: 50%;'
+            })
+          else
+            'No Avatar'
+          end
+        end
+      end
+      field :admin
+      field :bio
+    end
+  end
 end

@@ -1,29 +1,52 @@
-<div class="container mt-5" style="max-width: 600px;">
-  <div class="card shadow">
-    <div class="card-body">
-      <h2 class="card-title text-center mb-4">👤 Your Profile</h2>
+<div class="container py-5">
+  <h1 class="text-left fw-bold mb-4">My Profile</h1>
 
-      <% if @user.avatar.attached? %>
-        <p><strong>Avatar:</strong></p>
-
-        <% if @user.avatar.variable? %>
-          <%= image_tag current_user.avatar, width: 100, height: 100, alt: "#{current_user.avatar.filename}" %>
-        <% else %>
-          <p><em>Your current avatar is not a valid image preview (e.g. PDF). Please upload an image instead.</em></p>
-          <%= link_to "Download File", url_for(@user.avatar), class: "btn btn-outline-secondary btn-sm" %>
-        <% end %>
-      <% end %>
-
-      <hr>
-
-      <% if @user.bio.present? %>
-        <p><strong>Bio:</strong></p>
-        <p><%= simple_format(@user.bio) %></p>
-      <% else %>
-        <p><em>No bio added yet.</em></p>
-      <% end %>
-
-      <%= link_to "Edit Profile", edit_profile_path, class: "btn btn-primary mt-3" %>
+  <% if @user.banner.attached? %>
+    <div class="mb-4">
+      <%= image_tag "#{url_for(@user.banner)}?#{Time.now.to_i}", class: "w-100 rounded shadow-sm", alt: "Banner", height: 200, style: "object-fit: cover;" %>
     </div>
+  <% end %>
+
+  <% if @user.avatar.attached? %>
+    <div class="text-center mb-4">
+      <%= image_tag url_for(@user.avatar), class: "rounded-circle shadow", width: 150, height: 150, alt: "Avatar", style: "object-fit: cover;" %>
+    </div>
+  <% else %>
+    <div class="text-center mb-4">
+      <%= image_tag "default_avatar.png", class: "rounded-circle shadow", width: 150, height: 150, alt: "Avatar" %>
+    </div>
+  <% end %>
+
+  <div class="text-center mb-4">
+    <h2 class="fw-bold mb-1"><%= "#{@user.first_name} #{@user.last_name}" %></h2>
+    <p class="text-muted mb-1"><strong>Email:</strong> <%= @user.email %></p>
+    <% if @user.admin? %>
+      <p><strong>Role:</strong> Admin</p>
+    <% elsif @user.role.present? %>
+      <p><strong>Role:</strong> <%= @user.role.titleize %></p>
+    <% end %>
+
+    <% if @user.location.present? %>
+      <p><strong>Location:</strong> <%= @user.location %></p>
+    <% end %>
+    <% if @user.admin? %>
+      <p><strong>Profile Visibility:</strong> Private</p>
+    <% elsif @user.public_profile == true %>
+      <p><strong>Profile Visibility:</strong> Public</p>
+    <% elsif @user.public_profile == false %>
+      <p><strong>Profile Visibility:</strong> Private</p>
+    <% end %>
+    <p><i class="fas fa-calendar-alt"></i> Member since <%= @user.created_at.strftime("%B %d, %Y") %></p>
+    <% if @user.bio.present? %>
+      <p class="mt-2"><strong>Bio:</strong> <%= simple_format(@user.bio) %></p>
+    <% end %>
+  </div>
+
+  <div class="d-flex justify-content-center mt-3">
+    <%= link_to "Edit Profile", edit_profile_path, class: "btn btn-outline-primary me-2" %>
+    <%= form_with url: preference_path(@user.preference), method: :patch, local: true, scope: :preference, class: "d-flex align-items-center" do |f| %>
+      <%= f.select :theme, options_for_select(["light-theme", "dark-theme", "orange-theme", "blue-theme"], @user.preference&.theme), {}, class: "form-select me-2" %>
+      <%= f.submit "Apply", class: "btn btn-secondary" %>
+    <% end %>
   </div>
 </div>

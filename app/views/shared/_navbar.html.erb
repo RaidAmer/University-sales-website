@@ -36,7 +36,9 @@
               <% end %>
               <span>My Account</span>
 
-              <% if current_user.approved? %>
+              <% if current_user.admin? %>
+                <span class="badge bg-primary ms-2">Admin</span>
+              <% elsif current_user.approved? %>
                 <span class="badge bg-success ms-2">Approved</span>
               <% else %>
                 <span class="badge bg-warning text-dark ms-2">Pending</span>
@@ -45,6 +47,10 @@
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
               <%= link_to "Profile", profile_path, class: "dropdown-item" %>
               <%= link_to "My Orders", checkout_orders_path, class: "dropdown-item" %>
+
+              <% if current_user.admin? %>
+                <%= link_to "Admin Panel", admin_dashboard_path, class: "dropdown-item" %>
+              <% end %>
 
               <%= link_to "Log Out", destroy_user_session_path, method: :delete, class: "dropdown-item text-danger" %>
             </div>

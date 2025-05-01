@@ -1,41 +1,129 @@
-<div class="container mt-5" style="max-width: 600px;">
-  <div class="card shadow">
-    <div class="card-body">
-      <h2 class="card-title text-center mb-4">📝 Edit Your Profile</h2>
+<div class="container py-5">
+  <h2 class="mb-4 fw-bold">Edit Your Profile</h2>
 
-      <%= form_with model: current_user, url: profile_path, method: :patch, local: true, html: { multipart: true } do |f| %>
-        
-        <!-- Avatar Upload -->
-        <div class="mb-3">
-          <%= f.label :avatar, "Upload Avatar", class: "form-label" %>
-          <%= f.file_field :avatar, class: "form-control", accept: "image/*" %>
-          <small class="form-text text-muted">Only JPG, PNG, or other image files are allowed.</small>
-
-          <% if current_user.avatar.attached? %>
-            <div class="mt-3">
-              <p><strong>Current Avatar:</strong></p>
-
-              <% if current_user.avatar.variable? %>
-                <%= image_tag current_user.avatar, width: 100, height: 100, alt: "#{current_user.avatar.filename}" %>
-              <% else %>
-                <p><em>File cannot be previewed. Please upload a valid image.</em></p>
-                <%= link_to "Download File", url_for(current_user.avatar), class: "btn btn-sm btn-outline-secondary" %>
-              <% end %>
-            </div>
-          <% end %>
+  <%= form_with model: current_user, url: profile_path, method: :patch, local: true, html: { multipart: true } do |f| %>
+    <div class="mb-4 position-relative text-center" style="cursor: pointer;">
+      <label for="user_banner" class="position-relative d-block">
+        <% if current_user.banner.attached? %>
+          <%= image_tag "#{url_for(current_user.banner)}?#{Time.now.to_i}", class: "w-100 rounded shadow-sm", alt: "Banner", height: 200, style: "object-fit: cover;" %>
+        <% else %>
+          <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="height: 200px;">
+            <span class="text-muted">Click to upload banner</span>
+          </div>
+        <% end %>
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="background-color: rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+          <div class="d-flex flex-column justify-content-center align-items-center">
+            <i class="fas fa-pen text-white fs-5 mb-1"></i>
+            <span class="text-white" style="font-size: 0.9rem;">Edit your banner</span>
+          </div>
         </div>
-
-        <!-- Bio Textarea -->
-        <div class="mb-3">
-          <%= f.label :bio, "Your Bio", class: "form-label" %>
-          <%= f.text_area :bio, placeholder: "Tell us about yourself...", class: "form-control", rows: 5 %>
-        </div>
-
-        <!-- Submit -->
-        <div class="d-grid">
-          <%= f.submit "Save Profile", class: "btn btn-primary" %>
-        </div>
-      <% end %>
+      </label>
+      <%= f.file_field :banner, id: "user_banner", class: "d-none", accept: "image/*" %>
     </div>
-  </div>
+
+    <div class="text-center position-relative mb-4" style="width: 150px; height: 150px;">
+      <% if current_user.avatar.attached? %>
+        <%= image_tag "#{url_for(current_user.avatar)}?#{Time.now.to_i}", class: "rounded-circle shadow", alt: "Avatar", style: "width: 150px; height: 150px; object-fit: cover;" %>
+      <% else %>
+        <%= image_tag "default_avatar.png", class: "rounded-circle shadow", alt: "Default Avatar", style: "width: 150px; height: 150px; object-fit: cover;" %>
+      <% end %>
+      <label for="user_avatar" class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="background-color: rgba(0,0,0,0.4); color: white; opacity: 0; transition: opacity 0.2s; cursor: pointer;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+        <div class="text-center">
+          <i class="fas fa-pen mb-1" style="font-size: 0.9rem;"></i>
+          <div style="font-size: 0.85rem; color: white;">Edit your profile image</div>
+        </div>
+      </label>
+      <%= f.file_field :avatar, id: "user_avatar", class: "d-none", accept: "image/*" %>
+    </div>
+
+    <div class="col-md-6">
+      <h4>Bio</h4>
+      <div class="mb-3">
+        <%= f.label :bio, "Your Bio", class: "form-label" %>
+        <%= f.text_area :bio, placeholder: "Tell us about yourself...", class: "form-control", rows: 5 %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h4>First Name</h4>
+      <div class="mb-3">
+        <%= f.label :first_name, "First Name", class: "form-label" %>
+        <%= f.text_field :first_name, placeholder: "e.g. Ella", class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h4>Last Name</h4>
+      <div class="mb-3">
+        <%= f.label :last_name, "Last Name", class: "form-label" %>
+        <%= f.text_field :last_name, placeholder: "e.g. Joe", class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h4>Email</h4>
+      <div class="mb-3">
+        <%= f.label :email, "Email", class: "form-label" %>
+        <%= f.email_field :email, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h4>Profile Visibility</h4>
+      <div class="mb-3">
+        <%= f.label :public_profile, "Make your profile public?", class: "form-label" %>
+        <% if current_user.uuid == "U00828281" %>
+          <%= f.select :public_profile, [["Private", false]], {}, class: "form-select", disabled: true %>
+          <%= f.hidden_field :public_profile, value: false %>
+        <% else %>
+          <%= f.select :public_profile, [["Yes", true], ["No", false]], {}, class: "form-select" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h4>Location</h4>
+      <div class="mb-3">
+        <%= f.label :location, "Your Location", class: "form-label" %>
+        <%= f.text_field :location, placeholder: "e.g. Amsterdam, Netherlands", class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h4>Role</h4>
+      <div class="mb-3">
+        <%= f.label :role, "Select your role", class: "form-label" %>
+        <% if current_user.email == "yhssein1@memphis.edu" %>
+          <%= f.text_field :role, value: "admin", readonly: true, class: "form-control-plaintext text-dark fw-bold" %>
+        <% else %>
+          <%= f.select :role, [["Buyer", "buyer"], ["Seller", "seller"], ["Both", "both"]], {}, class: "form-select" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="text-end mt-3">
+      <%= f.submit "Save Profile", class: "btn btn-primary px-4" %>
+    </div>
+  <% end %>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const avatarInput = document.getElementById("user_avatar");
+    const avatarPreview = document.querySelector("img[alt='Avatar']");
+    avatarInput?.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        avatarPreview.src = URL.createObjectURL(file);
+      }
+    });
+
+    const bannerInput = document.getElementById("user_banner");
+    const bannerPreview = document.querySelector("img[alt='Banner']");
+    bannerInput?.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        bannerPreview.src = URL.createObjectURL(file);
+      }
+    });
+  });
+</script>

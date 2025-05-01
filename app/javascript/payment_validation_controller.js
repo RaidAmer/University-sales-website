@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
     form.addEventListener("submit", function (e) {
       const method = methodSelect.value;
-      if (method === "Campus" || method === "Apple pay") return; // Skip all validation
+      if (method === "Campus" || method === "Apple pay") return; 
   
       const card = cardField.value.trim().replace(/\s+/g, "");
       const exp = expField.value.trim();

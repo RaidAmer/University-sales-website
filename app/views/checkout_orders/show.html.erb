@@ -7,5 +7,10 @@
 <p><strong>Status:</strong> <%= @checkout_order.status %></p>
 
 <p><strong>Total:</strong> <%= number_to_currency(@checkout_order.total_price) %></p>
+<% tax         = (@checkout_order.total_price * 0.07).round(2) %>
+<% grand_total = (@checkout_order.total_price + tax).round(2) %>
+
+<p><strong>Tax (7%):</strong> <%= number_to_currency(tax) %></p>
+<p><strong>Grand Total:</strong> <%= number_to_currency(grand_total) %></p>
 
 <%= link_to "My Orders", checkout_orders_path, class: 'btn btn-primary' %>

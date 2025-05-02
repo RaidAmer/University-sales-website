@@ -13,9 +13,7 @@
  */
 
 // Custom bootstrap variables must be set or imported *before* bootstrap.
-@import "bootswatch/dist/yeti/variables";
-@import "bootstrap/scss/bootstrap";
-@import "bootswatch/dist/yeti/bootswatch";
+// @import "bootswatch/dist/yeti/variables";
 
 
 @import "success";
@@ -33,7 +31,7 @@ main {
 }
 
 .alert-dismissible {
-  padding-left: $alert-dismissible-padding-r;
+  padding-left: 1rem;
 }
 
 

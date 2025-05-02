@@ -6,6 +6,7 @@
 #
 #  id                     :bigint           not null, primary key
 #  admin                  :boolean
+#  admin_note             :text
 #  approved               :boolean
 #  bio                    :text
 #  email                  :string           default(""), not null
@@ -22,6 +23,7 @@
 #  uuid                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  university_id          :string
 #
 # Indexes
 #

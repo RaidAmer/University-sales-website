@@ -3,6 +3,13 @@
 <p><strong>First Name:</strong> <%= @user.first_name %></p>
 <p><strong>Last Name:</strong> <%= @user.last_name %></p>
 <p><strong>Email:</strong> <%= @user.email %></p>
+<% if @user.approved? %>
+  <p><strong>Status:</strong> <span class="badge bg-success">Approved</span></p>
+<% elsif !@user.approved? && @user.updated_at.present? %>
+  <p><strong>Status:</strong> <span class="badge bg-danger">Denied</span></p>
+<% else %>
+  <p><strong>Status:</strong> <span class="badge bg-warning">Pending</span></p>
+<% end %>
 
 <div class="dropdown d-inline-block ms-2">
   <button class="btn btn-secondary dropdown-toggle" type="button" id="profile-theme-dropdown" data-bs-toggle="dropdown" aria-expanded="false">

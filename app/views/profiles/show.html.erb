@@ -11,10 +11,6 @@
     <div class="text-center mb-4">
       <%= image_tag url_for(@user.avatar), class: "rounded-circle shadow", width: 150, height: 150, alt: "Avatar", style: "object-fit: cover;" %>
     </div>
-  <% else %>
-    <div class="text-center mb-4">
-      <%= image_tag "default_avatar.png", class: "rounded-circle shadow", width: 150, height: 150, alt: "Avatar" %>
-    </div>
   <% end %>
 
   <div class="text-center mb-4">

@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   end
 
   before_action :store_user_location!, if: :storable_location?
+  before_action :set_notifications
 
   protected
 
@@ -29,3 +30,9 @@ class ApplicationController < ActionController::Base
     stored_location_for(resource_or_scope) || root_path
   end
 end
+
+  private
+
+  def set_notifications
+    @notifications = current_user.notifications.where(read: false).order(created_at: :desc).limit(5) if current_user
+  end

@@ -1,0 +1,16 @@
+<h2>Admin User Review</h2>
+
+<p><strong>Email:</strong> <%= @object.email %></p>
+<p><strong>Approved:</strong> <%= @object.approved? ? "✅" : "❌" %></p>
+
+<%= form_with url: approve_user_path(@object), method: :patch, local: true do |f| %>
+  <div class="mb-3">
+    <%= f.label :admin_message, "Message to User" %>
+    <%= f.text_area :admin_message, rows: 4, class: "form-control", placeholder: "Write a message..." %>
+  </div>
+  <%= f.submit "Approve & Send Message", class: "btn btn-success" %>
+<% end %>
+
+<hr>
+
+<%= button_to "Deny User", deny_user_path(@object), method: :patch, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>

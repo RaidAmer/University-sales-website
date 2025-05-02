@@ -15,17 +15,47 @@
         <li class="nav-item">
           <%= link_to "Events", events_path, class: "nav-link active" %>
         </li>
-        <li class="nav-item">
-          <% if user_signed_in? && current_user.approved? %>
+        <% if user_signed_in? && current_user.approved? %>
+          <li class="nav-item">
             <%= link_to "Seller Dashboard", seller_dashboard_path, class: "nav-link active" %>
-          <% end %>
-        </li>
-
-        </li>
+          </li>
+        <% end %>
       </ul>
 
       <ul class="navbar-nav ms-auto">
         <% if user_signed_in? %>
+          <!-- Notifications -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              🔔
+              <% unread_count = current_user.notifications.where(read: false).count %>
+              <% if unread_count > 0 %>
+                <span class="badge-wrapper position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style="font-size: 0.7rem;" id="notification-count">
+                  <%= unread_count %>
+                </span>
+              <% end %>
+            </a>
+            <ul id="notification-list" class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+              <% notifications = current_user.notifications.where(read: false).order(created_at: :desc).limit(5) %>
+              <% notifications.each do |notification| %>
+                <li class="dropdown-item">
+                  <%= notification.actor.first_name %> <%= notification.action %>
+                  <small class="text-muted d-block"><%= time_ago_in_words(notification.created_at) %> ago</small>
+                  
+                  <% if notification.action == "replied to your message" && notification.notifiable_type == "Message" %>
+                    <%= link_to "📨 View Message", message_path(notification.notifiable_id), class: "btn btn-sm btn-outline-secondary mt-1" %>
+                  <% elsif notification.actor.present? && notification.notifiable_type == "Message" %>
+                    <%= link_to "📨 View Message", message_path(notification.notifiable_id), class: "btn btn-sm btn-outline-primary mt-1" %>
+                  <% elsif notification.actor.present? && (notification.action.include?("approved your account") || notification.action.include?("denied your account")) %>
+                    <%= link_to "Reply to Admin", new_message_path(recipient_id: notification.actor.id), class: "btn btn-sm btn-outline-primary mt-1" %>
+                  <% end %>
+                </li>
+              <% end %>
+              <li><hr class="dropdown-divider"></li>
+              <li><%= link_to "View all notifications", notifications_path, class: "dropdown-item text-center", id: "view-all-notifications-link" %></li>
+            </ul>
+          </li>
           <!-- My Account Dropdown -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -38,15 +68,18 @@
 
               <% if current_user.admin? %>
                 <span class="badge bg-primary ms-2">Admin</span>
-              <% elsif current_user.approved? %>
+              <% elsif current_user.approved.nil? %>
+                <span class="badge bg-warning text-dark ms-2">Pending</span>
+              <% elsif current_user.approved == true %>
                 <span class="badge bg-success ms-2">Approved</span>
               <% else %>
-                <span class="badge bg-warning text-dark ms-2">Pending</span>
+                <span class="badge bg-danger ms-2">Denied</span>
               <% end %>
             </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
               <%= link_to "Profile", profile_path, class: "dropdown-item" %>
               <%= link_to "My Orders", checkout_orders_path, class: "dropdown-item" %>
+              <%= link_to "Messages", messages_path, class: "dropdown-item" %>
 
               <% if current_user.admin? %>
                 <%= link_to "Admin Panel", admin_dashboard_path, class: "dropdown-item" %>
@@ -75,4 +108,41 @@
       </ul>
     </div>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const viewAllLink = document.getElementById("view-all-notifications-link");
+      viewAllLink?.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default link action
+
+        fetch("/notifications/mark_all_as_read", {
+          method: "POST",
+          headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          }
+        }).then(() => {
+          // Clear the notification dropdown
+          const dropdownList = document.getElementById("notification-list");
+          const badge = document.getElementById("notification-count");
+
+          if (dropdownList) {
+            dropdownList.innerHTML = `<li class="dropdown-item text-muted text-center">No new notifications</li>`;
+          }
+
+          if (badge) {
+            badge.style.display = 'none';
+          }
+
+          // Optionally still redirect
+          window.location.href = "/notifications";
+        });
+      });
+
+      document.querySelectorAll("#notification-list .dropdown-item a").forEach(link => {
+        link.addEventListener("click", function (e) {
+          e.stopPropagation(); // Prevent dropdown from collapsing
+        });
+      });
+    });
+  </script>
 </nav>

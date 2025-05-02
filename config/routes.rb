@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'messages/index'
+  get 'messages/new'
+  get 'messages/create'
+  get 'messages/show'
+  get 'messages/reply'
+  get 'notifications/index'
+  get 'admin/dashboard', to: 'admin_dashboard#index', as: 'admin_dashboard'
   resource :preferences, only: %i[edit update]
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   resource :profile, only: %i[show edit update]
@@ -8,7 +15,11 @@ Rails.application.routes.draw do
   # config/routes.rb
   namespace :admin do
     resources :users
+    resources :products
+    resources :categories
   end
+
+  resources :products
 
   # Devise (Login/Register)
   devise_for :users,
@@ -25,6 +36,7 @@ Rails.application.routes.draw do
 
   # Root and home
   root to: redirect('/categories')
+  get 'home', to: 'home#index', as: :home
 
   resource :cart, only: [:show]
   resources :cart_items, only: %i[create destroy] do
@@ -60,8 +72,8 @@ Rails.application.routes.draw do
   get 'product_dashboard/:id', to: 'seller_dashboard#show', as: 'product_dashboard'
 
   get 'admin/users', to: 'admin#users', as: 'custom_admin_users'
-  get 'admin/panel', to: 'admin#users', as: 'admin_dashboard'
-  patch 'admin/users/:id/approve', to: 'admin#approve', as: 'approve_user'
+  patch 'admin/users/:id/approve', to: 'admin/users#approve', as: 'approve_user'
+  patch 'admin/users/:id/deny', to: 'admin/users#deny', as: 'deny_user'
 
   get 'events', to: 'events#index', as: 'events'
   post 'events', to: 'events#create'
@@ -78,4 +90,18 @@ Rails.application.routes.draw do
 
   # get 'checkout_orders_page', to: 'checkout_orders#index', as: 'checkout_orders_index'
   # get 'checkout_orders/:id', to: 'checkout_orders#show', as: 'checkout_order'
+
+  delete 'notifications/clear_all', to: 'notifications#clear_all', as: 'clear_all_notifications'
+  post 'notifications/mark_all_as_read', to: 'notifications#mark_all_as_read'
+  resources :notifications, only: [:index, :destroy]
+
+resources :messages do
+  collection do
+    delete :clear_inbox, to: 'messages#clear_inbox', as: :clear_inbox
+    delete :clear_sent, to: 'messages#clear_sent', as: :clear_sent
+  end
+  member do
+    post :reply
+  end
+end
 end

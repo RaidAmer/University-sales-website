@@ -1,0 +1,55 @@
+<h1>Notifications</h1>
+
+<div class="mb-3 d-flex justify-content-between align-items-center">
+  <div>
+    <%= link_to "📋 All", notifications_path, class: "btn btn-sm #{params[:status].blank? ? 'btn-outline-primary filter-selected' : 'btn-outline-secondary'}" %>
+    <%= link_to "📬 Unread", notifications_path(status: "unread"), class: "btn btn-sm #{params[:status] == 'unread' ? 'btn-outline-warning filter-selected' : 'btn-outline-secondary'}" %>
+    <%= link_to "✅ Read", notifications_path(status: "read"), class: "btn btn-sm #{params[:status] == 'read' ? 'btn-outline-success filter-selected' : 'btn-outline-secondary'}" %>
+  </div>
+  <%= button_to "🧹 Clear All", clear_all_notifications_path, method: :delete, form: { "data-turbo" => "false" }, data: { turbo_confirm: "Are you sure you want to delete all notifications?" }, class: "btn btn-sm btn-outline-danger" %>
+</div>
+
+<% @notifications.update_all(read: true) if params[:status] == "unread" %>
+<% @notifications.each do |notification| %>
+  <%# notification.update(read: true) unless notification.read? %>
+  <div class="card mb-2 <%= notification.read? ? '' : 'border border-warning bg-light fw-bold' %>">
+    <div class="card-body d-flex justify-content-between align-items-center">
+      <div>
+        <h6 class="card-subtitle mb-1 text-muted">
+          <%= notification.actor&.email || "System" %> —
+          <%= time_ago_in_words(notification.created_at) %> ago
+        </h6>
+        <p class="card-text mb-1">
+          <% if notification.action&.include?("approved") && notification.action&.include?("sent you a message") %>
+            ✅ Admin approved your account and sent you a message.
+            <% if notification.notifiable_type == "Message" && notification.notifiable.present? %>
+              <blockquote class="mt-2 mb-2 p-2 bg-light border rounded"><%= notification.notifiable.body %></blockquote>
+              <%= link_to "📨 View Message", message_path(notification.notifiable_id), class: "btn btn-outline-secondary btn-sm" %>
+            <% end %>
+          <% elsif notification.action&.include?("denied") && notification.action&.include?("sent you a message") %>
+            ❌ Admin denied your account and sent you a message.
+            <% if notification.notifiable_type == "Message" && notification.notifiable.present? %>
+              <blockquote class="mt-2 mb-2 p-2 bg-light border rounded"><%= notification.notifiable.body %></blockquote>
+              <%= link_to "📨 View Message", message_path(notification.notifiable_id), class: "btn btn-outline-secondary btn-sm" %>
+            <% end %>
+          <% elsif notification.notifiable_type == "Message" %>
+            📨 Admin sent you a message.
+            <%= link_to "📨 View Message", message_path(notification.notifiable_id), class: "btn btn-outline-primary btn-sm mt-1" %>
+          <% elsif notification.action&.include?("approved") %>
+            ✅ Admin approved your account.
+          <% elsif notification.action&.include?("denied") %>
+            ❌ Admin denied your account.
+          <% elsif notification.notifiable_type == "User" %>
+            A new user registered:
+            <%= link_to notification.notifiable.email, "/admin/user/#{notification.notifiable_id}" %>
+          <% else %>
+            <%= link_to notification.notifiable_type, polymorphic_path(notification.notifiable) rescue "#" %>
+          <% end %>
+        </p>
+      </div>
+      <div>
+        <%= button_to "🗑️", notification_path(notification), method: :delete, form: { data: { turbo_confirm: "Are you sure?" } }, class: "btn btn-sm btn-danger" %>
+      </div>
+    </div>
+  </div>
+<% end %>

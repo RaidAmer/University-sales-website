@@ -4,6 +4,7 @@
 #
 #  id                     :bigint           not null, primary key
 #  admin                  :boolean
+#  admin_note             :text
 #  approved               :boolean
 #  bio                    :text
 #  email                  :string           default(""), not null
@@ -20,6 +21,7 @@
 #  uuid                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  university_id          :string
 #
 # Indexes
 #
@@ -35,10 +37,20 @@ class User < ApplicationRecord
   has_many :products
   has_one_attached :avatar
   has_one_attached :banner
+  has_one_attached :university_id
   has_one :preference
+  has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
+  has_many :sent_notifications, class_name: "Notification", foreign_key: :actor_id, dependent: :nullify
+  has_many :messages_sent, class_name: "Message", foreign_key: :sender_id, dependent: :destroy
+  has_many :messages_received, class_name: "Message", foreign_key: :recipient_id, dependent: :destroy
+  before_create :set_default_approval
 
   def admin?
     uuid == "U00828281"
+  end
+
+  def denied?
+    approved == false
   end
 
   def seller?
@@ -51,5 +63,20 @@ class User < ApplicationRecord
 
   def profile_completed?
     bio.present? && avatar&.attached? && banner&.attached?
+  end
+
+  private
+
+  def set_default_approval
+    self.approved = nil if approved.nil?
+  end
+
+  after_create_commit :notify_admin_of_new_account
+
+  def notify_admin_of_new_account
+    ActionCable.server.broadcast("admin_notifications", {
+      email: self.email,
+      created_at: self.created_at.strftime("%b %d, %Y %H:%M")
+    })
   end
 end

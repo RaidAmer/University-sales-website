@@ -1,0 +1,23 @@
+<h2>Welcome, <%= current_user.first_name %>!</h2>
+
+<p><strong>Email:</strong> <%= current_user.email %></p>
+<p><strong>Account Status:</strong> <%= current_user.approved? ? "✅ Approved" : "⏳ Pending Review" %></p>
+
+<% if current_user.university_id.attached? %>
+  <h5>📎 Uploaded University ID</h5>
+  <%= image_tag current_user.university_id, height: '150px', class: "mb-3" %>
+<% else %>
+  <p>You have not uploaded a university ID.</p>
+<% end %>
+
+<% if current_user.admin_note.present? %>
+  <div class="card mt-4 border-info">
+    <div class="card-header bg-info text-white">
+      📢 Message from Admin
+    </div>
+    <div class="card-body">
+      <p class="card-text"><%= simple_format(current_user.admin_note) %></p>
+      <p class="text-muted small">This message was sent by an administrator.</p>
+    </div>
+  </div>
+<% end %>

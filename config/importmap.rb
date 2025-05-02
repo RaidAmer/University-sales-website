@@ -14,3 +14,5 @@ pin 'autosize', to: 'https://ga.jspm.io/npm:autosize@6.0.1/dist/autosize.esm.js'
 pin "@rails/ujs", to: "https://ga.jspm.io/npm:@rails/ujs@7.0.0/lib/assets/compiled/rails-ujs.js"
 pin "confetti", to: "confetti.browser.min.js"
 
+pin "@rails/actioncable", to: "actioncable.esm.js"
+pin_all_from "app/javascript/channels", under: "channels"

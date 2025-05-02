@@ -5,11 +5,9 @@
     <div class="mb-4 position-relative text-center" style="cursor: pointer;">
       <label for="user_banner" class="position-relative d-block">
         <% if current_user.banner.attached? %>
-          <%= image_tag "#{url_for(current_user.banner)}?#{Time.now.to_i}", class: "w-100 rounded shadow-sm", alt: "Banner", height: 200, style: "object-fit: cover;" %>
+          <%= image_tag "#{url_for(current_user.banner)}?#{Time.now.to_i}", class: "w-100 rounded shadow-sm img-preview", alt: "My Banner", height: 200, style: "object-fit: cover;", id: "banner_preview" %>
         <% else %>
-          <div class="bg-light border rounded d-flex align-items-center justify-content-center" style="height: 200px;">
-            <span class="text-muted">Click to upload banner</span>
-          </div>
+          <%= image_tag "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='200' viewBox='0 0 800 200'%3E%3Crect width='800' height='200' fill='%23ddd' /%3E%3Ctext x='50%' y='50%' font-size='24' text-anchor='middle' fill='%23999' dy='.3em'%3EMy Banner%3C/text%3E%3C/svg%3E", class: "w-100 rounded shadow-sm img-preview", alt: "My Banner", height: 200, style: "object-fit: cover;", id: "banner_preview" %>
         <% end %>
         <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="background-color: rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
           <div class="d-flex flex-column justify-content-center align-items-center">
@@ -23,14 +21,14 @@
 
     <div class="text-center position-relative mb-4" style="width: 150px; height: 150px;">
       <% if current_user.avatar.attached? %>
-        <%= image_tag "#{url_for(current_user.avatar)}?#{Time.now.to_i}", class: "rounded-circle shadow", alt: "Avatar", style: "width: 150px; height: 150px; object-fit: cover;" %>
+        <%= image_tag "#{url_for(current_user.avatar)}?#{Time.now.to_i}", class: "rounded-circle shadow img-preview", alt: "My Avatar", style: "width: 150px; height: 150px; object-fit: cover;", id: "avatar_preview" %>
       <% else %>
-        <%= image_tag "default_avatar.png", class: "rounded-circle shadow", alt: "Default Avatar", style: "width: 150px; height: 150px; object-fit: cover;" %>
+        <%= image_tag "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Ccircle cx='75' cy='75' r='75' fill='%23ddd' /%3E%3Ctext x='50%' y='50%' font-size='20' text-anchor='middle' fill='%23999' dy='.3em'%3EMy Avatar%3C/text%3E%3C/svg%3E", class: "rounded-circle shadow img-preview", alt: "My Avatar", style: "width: 150px; height: 150px; object-fit: cover;", id: "avatar_preview" %>
       <% end %>
-      <label for="user_avatar" class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="background-color: rgba(0,0,0,0.4); color: white; opacity: 0; transition: opacity 0.2s; cursor: pointer;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+      <label for="user_avatar" class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="background-color: rgba(255, 255, 255, 0.8); color: #111; text: none; opacity: 0; transition: opacity 0.2s; cursor: pointer;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
         <div class="text-center">
           <i class="fas fa-pen mb-1" style="font-size: 0.9rem;"></i>
-          <div style="font-size: 0.85rem; color: white;">Edit your profile image</div>
+          <div style="font-size: 0.85rem; color: black;">Edit your profile image</div>
         </div>
       </label>
       <%= f.file_field :avatar, id: "user_avatar", class: "d-none", accept: "image/*" %>
@@ -107,23 +105,23 @@
   <% end %>
 </div>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const avatarInput = document.getElementById("user_avatar");
-    const avatarPreview = document.querySelector("img[alt='Avatar']");
-    avatarInput?.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        avatarPreview.src = URL.createObjectURL(file);
-      }
-    });
-
-    const bannerInput = document.getElementById("user_banner");
-    const bannerPreview = document.querySelector("img[alt='Banner']");
-    bannerInput?.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        bannerPreview.src = URL.createObjectURL(file);
-      }
-    });
+document.addEventListener("DOMContentLoaded", function () {
+  const avatarInput = document.getElementById("user_avatar");
+  const avatarPreview = document.getElementById("avatar_preview");
+  avatarInput?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      avatarPreview.src = URL.createObjectURL(file);
+    }
   });
+
+  const bannerInput = document.getElementById("user_banner");
+  const bannerPreview = document.getElementById("banner_preview");
+  bannerInput?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      bannerPreview.src = URL.createObjectURL(file);
+    }
+  });
+});
 </script>

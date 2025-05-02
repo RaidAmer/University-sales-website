@@ -147,3 +147,30 @@ body.orange-theme {
 a {
   color: inherit;
 }
+
+#admin-alert-box li {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  font-weight: bold;
+  list-style: none;
+  color: #856404;
+}
+
+.filter-selected {
+  background-color: #d1ecf1 !important;
+  border-left: 4px solid #17a2b8 !important;
+}
+
+.notification-highlight {
+  animation: highlightFlash 0.6s ease-in-out;
+  background-color: #d1ecf1 !important;
+}
+
+@keyframes highlightFlash {
+  0%   { background-color: #ffffff; }
+  50%  { background-color: #d1ecf1; }
+  100% { background-color: #ffffff; }
+}

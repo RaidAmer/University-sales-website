@@ -19,10 +19,27 @@
               <%= item.product.name %>
             </div>
           </td>
-          <td><%= item.quantity %></td>
-          <td>$<%= item.quantity * item.product.price %></td>
           <td>
-            <%= button_to "Remove", cart_item_path(item), method: :delete, class: "btn btn-danger btn-sm" %>
+            <%= button_to "+", update_quantity_cart_item_path(item, quantity: item.quantity + 1),
+                  method: :patch,
+                  class: "btn btn-sm btn-outline-primary px-1 py-0" %>
+
+
+            <span class="mx-2"><%= item.quantity %></span>
+
+            <%= button_to "–", update_quantity_cart_item_path(item, quantity: item.quantity - 1),
+                  method: :patch,
+                  class: "btn btn-sm btn-outline-danger px-1 py-0" %>
+
+          </td>
+          <td>
+            $<%= '%.2f' % (item.quantity * item.product.price) %>
+          </td>
+          <td>
+            <%= button_to "Remove",
+                  cart_item_path(item),
+                  method: :delete,
+                  class: "btn btn-danger btn-sm" %>
           </td>
         </tr>
       <% end %>
@@ -36,7 +53,6 @@
     <%= hidden_field_tag :user_id, 1 %>
     <%= f.submit "Proceed to Payment", class: "btn btn-primary" %>
   <% end %>
-
 <% else %>
   <p>There are no items in your cart.</p>
 <% end %>

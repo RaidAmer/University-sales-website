@@ -23,8 +23,7 @@ Rails.application.routes.draw do
              }
 
   # Root and home
-  root to: redirect('/home')
-  get 'home', to: 'home#index', as: 'home'
+  root to: redirect('/categories')
 
   resource :cart, only: [:show]
   resources :cart_items, only: %i[create destroy] do

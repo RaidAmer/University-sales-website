@@ -16,8 +16,7 @@
     <%= javascript_import_module_tag "application", "data-turbo-track": "reload" %>
   </head>
 
-  <% theme = current_user&.preference&.theme %>
-  <body class="<%= theme.presence || 'light-theme' %>" data-controller="notifications">
+  <body class="<%= current_user&.theme.presence || 'light-theme' %>" data-controller="notifications">
     <%= render 'shared/navbar' %>
     <ul id="admin-alert-box" class="notification-box" style="list-style: none; padding: 1rem;"></ul>
 

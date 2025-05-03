@@ -37,7 +37,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     #  Save to DB
     resource.uuid = typed_uuid
-    resource.approved = false
+    resource.approved = nil
 
     #  Required fields check
     missing = []
@@ -53,15 +53,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
 
     if resource.save
+      sign_up(resource_name, resource)
+
       admin_user = User.where(admin: true).first
-      if admin_user
+      if admin_user.is_a?(User)
         Notification.create!(
           actor: resource,
           recipient: admin_user,
+          recipient_type: "User",
           action: "signed up",
           notifiable: resource,
           read: false
         )
+
         ActionCable.server.broadcast(
           "AdminNotificationsChannel",
           {
@@ -70,7 +74,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
           }
         )
       end
-      sign_up(resource_name, resource)
+
       redirect_to successfully_created_account_path
     else
       Rails.logger.debug(resource.errors.full_messages)

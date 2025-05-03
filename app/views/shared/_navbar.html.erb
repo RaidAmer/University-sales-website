@@ -40,7 +40,7 @@
               <% notifications = current_user.notifications.where(read: false).order(created_at: :desc).limit(5) %>
               <% notifications.each do |notification| %>
                 <li class="dropdown-item">
-                  <%= notification.actor.first_name %> <%= notification.action %>
+                  <%= notification.actor&.first_name || "Someone" %> <%= notification.action %>
                   <small class="text-muted d-block"><%= time_ago_in_words(notification.created_at) %> ago</small>
                   
                   <% if notification.action == "replied to your message" && notification.notifiable_type == "Message" %>

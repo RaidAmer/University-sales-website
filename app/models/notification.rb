@@ -4,28 +4,25 @@
 #
 #  id              :bigint           not null, primary key
 #  action          :string
-#  notifiable_type :string           not null
-#  read            :boolean          default(FALSE)
+#  actor_type      :string
+#  notifiable_type :string
+#  read            :boolean          default(FALSE), not null
+#  recipient_type  :string           not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  actor_id        :bigint           not null
-#  notifiable_id   :bigint           not null
+#  actor_id        :bigint
+#  notifiable_id   :bigint
 #  recipient_id    :bigint           not null
 #
 # Indexes
 #
-#  index_notifications_on_actor_id      (actor_id)
-#  index_notifications_on_notifiable    (notifiable_type,notifiable_id)
-#  index_notifications_on_recipient_id  (recipient_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (actor_id => users.id)
-#  fk_rails_...  (recipient_id => users.id)
+#  index_notifications_on_actor       (actor_type,actor_id)
+#  index_notifications_on_notifiable  (notifiable_type,notifiable_id)
+#  index_notifications_on_recipient   (recipient_type,recipient_id)
 #
 class Notification < ApplicationRecord
-  belongs_to :actor, class_name: 'User'
-  belongs_to :recipient, class_name: 'User'
+  belongs_to :actor, polymorphic: true, optional: true
+  belongs_to :recipient, polymorphic: true
   belongs_to :notifiable, polymorphic: true
 
   after_create_commit -> {

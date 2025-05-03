@@ -17,6 +17,7 @@
         </div>
       </label>
       <%= f.file_field :banner, id: "user_banner", class: "d-none", accept: "image/*" %>
+      <% if current_user.banner.attached? %><div class="text-muted">Banner image is attached.</div><% end %>
     </div>
 
     <div class="text-center position-relative mb-4" style="width: 150px; height: 150px;">
@@ -32,6 +33,7 @@
         </div>
       </label>
       <%= f.file_field :avatar, id: "user_avatar", class: "d-none", accept: "image/*" %>
+      <% if current_user.avatar.attached? %><div class="text-muted">Avatar image is attached.</div><% end %>
     </div>
 
     <div class="col-md-6">
@@ -98,6 +100,7 @@
         <% end %>
       </div>
     </div>
+
 
     <div class="text-end mt-3">
       <%= f.submit "Save Profile", class: "btn btn-primary px-4" %>

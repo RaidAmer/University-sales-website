@@ -17,6 +17,7 @@
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  role                   :string
+#  theme                  :string
 #  username               :string
 #  uuid                   :string
 #  created_at             :datetime         not null
@@ -38,7 +39,7 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_one_attached :banner
   has_one_attached :university_id
-  has_one :preference
+  has_one :preference, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
   has_many :sent_notifications, class_name: "Notification", foreign_key: :actor_id, dependent: :nullify
   has_many :messages_sent, class_name: "Message", foreign_key: :sender_id, dependent: :destroy
@@ -65,6 +66,12 @@ class User < ApplicationRecord
     bio.present? && avatar&.attached? && banner&.attached?
   end
 
+  def approval_status
+    return "Approved" if approved == true
+    return "Denied" if approved == false
+    "Pending"
+  end
+
   private
 
   def set_default_approval
@@ -74,6 +81,17 @@ class User < ApplicationRecord
   after_create_commit :notify_admin_of_new_account
 
   def notify_admin_of_new_account
+    admin = User.find_by(admin: true)
+    if admin
+      Notification.create!(
+        recipient: admin,
+        actor: self,
+        action: "signed up and is pending approval",
+        notifiable: self,
+        read: false
+      )
+    end
+
     ActionCable.server.broadcast("admin_notifications", {
       email: self.email,
       created_at: self.created_at.strftime("%b %d, %Y %H:%M")

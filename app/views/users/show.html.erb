@@ -5,10 +5,10 @@
 <p><strong>Email:</strong> <%= @user.email %></p>
 <% if @user.approved? %>
   <p><strong>Status:</strong> <span class="badge bg-success">Approved</span></p>
-<% elsif !@user.approved? && @user.updated_at.present? %>
+<% elsif @user.approved == false %>
   <p><strong>Status:</strong> <span class="badge bg-danger">Denied</span></p>
 <% else %>
-  <p><strong>Status:</strong> <span class="badge bg-warning">Pending</span></p>
+  <p><strong>Status:</strong> <span class="badge bg-warning text-dark">Pending</span></p>
 <% end %>
 
 <div class="dropdown d-inline-block ms-2">

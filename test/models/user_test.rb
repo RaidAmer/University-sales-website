@@ -19,6 +19,7 @@
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  role                   :string
+#  theme                  :string
 #  username               :string
 #  uuid                   :string
 #  created_at             :datetime         not null

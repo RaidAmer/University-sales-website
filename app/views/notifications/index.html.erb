@@ -39,9 +39,20 @@
             ✅ Admin approved your account.
           <% elsif notification.action&.include?("denied") %>
             ❌ Admin denied your account.
+          <% elsif notification.action == "signed up and is pending approval" %>
+            🕓 A new user signed up and is pending approval:
+            <% if notification.notifiable.present? %>
+              <%= link_to notification.notifiable.email, "/admin/user/#{notification.notifiable_id}" %>
+            <% else %>
+              <em>User not found</em>
+            <% end %>
           <% elsif notification.notifiable_type == "User" %>
             A new user registered:
-            <%= link_to notification.notifiable.email, "/admin/user/#{notification.notifiable_id}" %>
+            <% if notification.notifiable.present? %>
+              <%= link_to notification.notifiable.email, "/admin/user/#{notification.notifiable_id}" %>
+            <% else %>
+              <em>User not found</em>
+            <% end %>
           <% else %>
             <%= link_to notification.notifiable_type, polymorphic_path(notification.notifiable) rescue "#" %>
           <% end %>

@@ -95,6 +95,8 @@ Rails.application.routes.draw do
   post 'notifications/mark_all_as_read', to: 'notifications#mark_all_as_read'
   resources :notifications, only: [:index, :destroy]
 
+  patch 'users/:id/theme', to: 'users#update_theme', as: 'update_user_theme'
+
 resources :messages do
   collection do
     delete :clear_inbox, to: 'messages#clear_inbox', as: :clear_inbox

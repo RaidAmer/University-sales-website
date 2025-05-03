@@ -40,8 +40,8 @@
 
   <div class="d-flex justify-content-center mt-3">
     <%= link_to "Edit Profile", edit_profile_path, class: "btn btn-outline-primary me-2" %>
-    <%= form_with url: preference_path(@user.preference), method: :patch, local: true, scope: :preference, class: "d-flex align-items-center" do |f| %>
-      <%= f.select :theme, options_for_select(["light-theme", "dark-theme", "orange-theme", "blue-theme"], @user.preference&.theme), {}, class: "form-select me-2" %>
+    <%= form_with model: @user, url: profile_path, method: :patch, local: true, class: "d-flex align-items-center" do |f| %>
+      <%= f.select :theme, options_for_select(["light-theme", "dark-theme", "orange-theme", "blue-theme"], @user.theme), {}, class: "form-select me-2" %>
       <%= f.submit "Apply", class: "btn btn-secondary" %>
     <% end %>
   </div>

@@ -1,11 +1,19 @@
 <div class="container my-5">
   <div class="row">
     <div class="col-md-6 text-center">
-      <%= image_tag @product.image, class: "img-fluid rounded shadow", alt: "#{@product.name} image", style: "max-height: 500px; object-fit: contain;" %>
+      <%= image_tag @product.image,
+            class: "img-fluid rounded shadow",
+            alt: "#{@product.name} image",
+            style: "max-height: 500px; object-fit: contain;" %>
     </div>
 
     <div class="col-md-6 d-flex flex-column justify-content-center">
       <h1 class="mb-3"><%= @product.name %></h1>
+
+      <p class="text-muted mb-1">
+        Sold by:
+        <strong><%= @product.user.first_name %> <%= @product.user.last_name %></strong>
+      </p>
 
 
 <p> <%=@product.description%></p>
@@ -14,15 +22,21 @@
 <p><%=@product.status%></p>
 
       <p class="text-muted mb-1">Sold by: <strong><%= @product.user.first_name %> <%= @product.user.last_name %></strong></p>
+
       <p class="mb-3"><%= @product.description %></p>
 
-
-      <h4 class="text-success mb-2">$<%= @product.price %></h4>
+      <h4 class="text-success mb-2">$<%= '%.2f' % @product.price %></h4>
       <p class="mb-4">Status: <%= @product.status %></p>
 
-      <%= button_to "Add to Cart", cart_items_path(product_id: @product.id), method: :post, class: "btn btn-success btn-lg mb-3", id: "add-to-cart-btn" %>
+      <%= button_to "Add to Cart",
+            cart_items_path(product_id: @product.id),
+            method: :post,
+            class: "btn btn-success btn-lg mb-3",
+            id: "add-to-cart-btn" %>
 
-      <%= link_to "← Back to Store", category_products_path(@category), class: "btn btn-outline-secondary rounded-pill px-4" %>
+      <%= link_to "← Back to Store",
+            category_products_path(@category),
+            class: "btn btn-outline-secondary rounded-pill px-4" %>
     </div>
   </div>
 </div>

@@ -26,7 +26,10 @@ class Notification < ApplicationRecord
   belongs_to :notifiable, polymorphic: true
 
   after_create_commit -> {
-    broadcast_prepend_to "notifications", target: "notification-list"
-    broadcast_update_to "notifications", target: "notification-count"
+    # Skip broadcasting notifications for admin recipients
+    unless recipient_type == "User" && User.find_by(id: recipient_id)&.admin?
+      broadcast_prepend_to "notifications", target: "notification-list"
+      broadcast_update_to "notifications", target: "notification-count"
+    end
   }
 end

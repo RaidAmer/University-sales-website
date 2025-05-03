@@ -1,5 +1,7 @@
 class NotificationsController < ApplicationController
   def index
+    return redirect_to root_path if current_user.admin?
+
     base_scope = current_user.notifications
 
     # Filter out system/admin-only messages for non-admins

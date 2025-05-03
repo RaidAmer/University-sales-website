@@ -55,24 +55,26 @@ class Users::RegistrationsController < Devise::RegistrationsController
     if resource.save
       sign_up(resource_name, resource)
 
-      admin_user = User.where(admin: true).first
-      if admin_user.is_a?(User)
-        Notification.create!(
-          actor: resource,
-          recipient: admin_user,
-          recipient_type: "User",
-          action: "signed up",
-          notifiable: resource,
-          read: false
-        )
+      unless resource.admin?
+        admin_user = User.where(admin: true).first
+        if admin_user.is_a?(User)
+          Notification.create!(
+            actor: resource,
+            recipient: admin_user,
+            recipient_type: "User",
+            action: "signed up",
+            notifiable: resource,
+            read: false
+          )
 
-        ActionCable.server.broadcast(
-          "AdminNotificationsChannel",
-          {
-            email: resource.email,
-            created_at: Time.current.strftime("%Y-%m-%d %H:%M:%S")
-          }
-        )
+          ActionCable.server.broadcast(
+            "AdminNotificationsChannel",
+            {
+              email: resource.email,
+              created_at: Time.current.strftime("%Y-%m-%d %H:%M:%S")
+            }
+          )
+        end
       end
 
       redirect_to successfully_created_account_path

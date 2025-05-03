@@ -23,6 +23,8 @@ class ProfilesController < ApplicationController
   def update
     @user = current_user
     if @user.update(profile_params)
+      Rails.logger.debug "Avatar attached: #{@user.avatar.attached?}"
+      Rails.logger.debug "Banner attached: #{@user.banner.attached?}"
       redirect_to profile_path, notice: "Profile updated successfully!"
     else
       render :edit, alert: "Please fix the errors."

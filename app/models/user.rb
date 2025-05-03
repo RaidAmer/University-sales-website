@@ -45,6 +45,7 @@ class User < ApplicationRecord
   has_many :messages_sent, class_name: "Message", foreign_key: :sender_id, dependent: :destroy
   has_many :messages_received, class_name: "Message", foreign_key: :recipient_id, dependent: :destroy
   before_create :set_default_approval
+  has_many :events
 
   def admin?
     uuid == "U00828281"

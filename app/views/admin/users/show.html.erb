@@ -3,6 +3,20 @@
 <p><strong>Email:</strong> <%= @object.email %></p>
 <p><strong>Approved:</strong> <%= @object.approved? ? "✅" : "❌" %></p>
 
+<p><strong>Avatar:</strong></p>
+<% if @object.avatar.attached? %>
+  <%= image_tag url_for(@object.avatar), class: "rounded-circle shadow", width: 150, height: 150, alt: "Avatar", style: "object-fit: cover;" %>
+<% else %>
+  <p>No avatar uploaded.</p>
+<% end %>
+
+<p><strong>Banner:</strong></p>
+<% if @object.banner.attached? %>
+  <%= image_tag url_for(@object.banner), class: "shadow", width: 800, height: 200, alt: "Banner", style: "object-fit: cover;" %>
+<% else %>
+  <p>No banner uploaded.</p>
+<% end %>
+
 <%= form_with url: approve_user_path(@object), method: :patch, local: true do |f| %>
   <div class="mb-3">
     <%= f.label :admin_message, "Message to User" %>

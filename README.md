@@ -11,5 +11,6 @@
 
 - bundle install
 - yarn install
+- rvm use 3.3.6 --default
 - rails assets:precompile
 - rails db:drop db:create db:migrate db:seed

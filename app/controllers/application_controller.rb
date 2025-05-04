@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   before_action :check_approval_status
 
   def check_approval_status
-    if current_user && current_user.approved.nil?
+    if current_user && current_user.approved.nil? && request.path.start_with?("/products")
       flash.now[:alert] = "Access denied. Please wait until your account is approved by an admin."
     end
   end

@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   def check_approval_status
     if current_user && current_user.approved.nil?
-      flash.now[:alert] = "Your account is pending admin approval."
+      flash.now[:alert] = "Access denied. Please wait until your account is approved by an admin."
     end
   end
 

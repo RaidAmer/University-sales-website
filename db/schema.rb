@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_03_165809) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_04_044232) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,6 +75,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_03_165809) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "customer_reviews", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.integer "rating"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "product_id"
+    t.bigint "user_id"
+    t.index ["product_id"], name: "index_customer_reviews_on_product_id"
+    t.index ["user_id"], name: "index_customer_reviews_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -183,6 +195,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_03_165809) do
   end
 
   create_table "reviews", force: :cascade do |t|
+    t.string "title"
     t.text "content"
     t.integer "rating"
     t.bigint "checkout_order_id", null: false
@@ -222,6 +235,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_03_165809) do
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "checkout_orders"
   add_foreign_key "cart_items", "products"
+  add_foreign_key "customer_reviews", "products"
+  add_foreign_key "customer_reviews", "users"
   add_foreign_key "events", "users"
   add_foreign_key "messages", "users", column: "recipient_id"
   add_foreign_key "messages", "users", column: "sender_id"

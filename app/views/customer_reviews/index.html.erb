@@ -1,0 +1,26 @@
+<h1><%= @product.name %> Reviews!</h1>
+
+<% if @reviews.any? %>
+  <div class="row">
+    <% @reviews.each do |review| %>
+      <div class="col-md-4 mb-4"> <!-- Adjust the col-md-* to control the number of columns per row -->
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title"><%= review.title %></h5>
+            <p class="card-text"><strong>Created by:</strong> <%= review.user.first_name %> <%= review.user.last_name %></p>
+            <p class="card-text"><%= review.description %></p>
+            <p>
+              <strong>Rating:</strong>
+              <%= '★' * review.rating %><%= '☆' * (5 - review.rating) %>
+            </p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-center text-muted">This product has no reviews yet.</p>
+<% end %>
+
+<p><%= link_to "Write a Review", new_category_product_review_path(@product.category, @product), class: "btn btn-secondary" %></p>
+<p><%= link_to "Back", category_product_path(@product.category, @product), class: "btn btn-secondary" %></p>

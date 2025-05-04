@@ -1,4 +1,8 @@
-<h1>My Orders</h1>
+<% if current_user.admin? || current_user.seller? %>
+  <h1>Customer Orders</h1>
+<% else %>
+  <h1>My Orders</h1>
+<% end %>
 
 <table class='table table-hover'>
     <thead class='table-dark'>

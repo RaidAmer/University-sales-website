@@ -1,0 +1,12 @@
+<h1>Create New Reveiw</h1>
+
+<%= bootstrap_form_with model: @review, url: category_product_reviews_path(@category, @product), method: :post, data: { turbo: false } do |f| %>
+
+  <%= f.text_field :title %>
+  <%= f.text_area :description %>
+  <%= f.select :rating, (1..5).map { |n| [ "#{n} Star#{'s' if n > 1}", n ] }, label: "Rating" %>
+  <%= f.submit %>
+
+<% end %>
+
+<%= link_to "Back", category_product_reviews_path(@category, @product)%>

@@ -34,9 +34,9 @@
             class: "btn btn-success btn-lg mb-3",
             id: "add-to-cart-btn" %>
 
-      <%= link_to "← Back to Store",
-            category_products_path(@category),
-            class: "btn btn-outline-secondary rounded-pill px-4" %>
+      <%= link_to "Reviews", category_product_reviews_path(@category, @product), class: "btn btn-outline-secondary rounded-pill px-4"%>
+
+      <%= link_to "← Back to Store", category_products_path(@category), class: "btn btn-outline-secondary rounded-pill px-4" %>
     </div>
   </div>
 </div>

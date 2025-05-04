@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -41,14 +43,22 @@ class User < ApplicationRecord
   has_one_attached :university_id
   has_one :preference, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
-  has_many :sent_notifications, class_name: "Notification", foreign_key: :actor_id, dependent: :nullify
-  has_many :messages_sent, class_name: "Message", foreign_key: :sender_id, dependent: :destroy
-  has_many :messages_received, class_name: "Message", foreign_key: :recipient_id, dependent: :destroy
+  has_many :sent_notifications, class_name: 'Notification', foreign_key: :actor_id, dependent: :nullify
+  has_many :messages_sent, class_name: 'Message', foreign_key: :sender_id, dependent: :destroy
+  has_many :messages_received, class_name: 'Message', foreign_key: :recipient_id, dependent: :destroy
   before_create :set_default_approval
   has_many :events
 
+  has_many(
+    :customer_reviews,
+    class_name:  'CustomerReview',
+    foreign_key: 'user_id',
+    inverse_of:  :user,
+    dependent:   :destroy
+  )
+
   def admin?
-    uuid == "U00828281"
+    uuid == 'U00828281'
   end
 
   def denied?
@@ -56,11 +66,11 @@ class User < ApplicationRecord
   end
 
   def seller?
-    preference&.role == 'seller' || preference&.role == 'both'
+    %w[seller both].include?(preference&.role)
   end
 
   def buyer?
-    preference&.role == 'buyer' || preference&.role == 'both'
+    %w[buyer both].include?(preference&.role)
   end
 
   def profile_completed?
@@ -68,9 +78,10 @@ class User < ApplicationRecord
   end
 
   def approval_status
-    return "Approved" if approved == true
-    return "Denied" if approved == false
-    "Pending"
+    return 'Approved' if approved == true
+    return 'Denied' if approved == false
+
+    'Pending'
   end
 
   private
@@ -85,17 +96,17 @@ class User < ApplicationRecord
     admin = User.find_by(admin: true)
     if admin
       Notification.create!(
-        recipient: admin,
-        actor: self,
-        action: "signed up and is pending approval",
+        recipient:  admin,
+        actor:      self,
+        action:     'signed up and is pending approval',
         notifiable: self,
-        read: false
+        read:       false
       )
     end
 
-    ActionCable.server.broadcast("admin_notifications", {
-      email: self.email,
-      created_at: self.created_at.strftime("%b %d, %Y %H:%M")
-    })
+    ActionCable.server.broadcast('admin_notifications', {
+                                   email:      email,
+                                   created_at: created_at.strftime('%b %d, %Y %H:%M')
+                                 })
   end
 end

@@ -1,0 +1,41 @@
+<h1>Your Messages</h1>
+
+<%= turbo_stream_from "notifications" %>
+
+<h2>📥 Inbox</h2>
+<% if @received_messages.any? %>
+  <%= button_to '🧹 Clear All Inbox Messages', clear_inbox_messages_path, method: :delete, data: { turbo_confirm: 'Are you sure you want to delete all received messages?' }, class: 'btn btn-outline-danger btn-sm', style: 'margin-bottom: 10px;' %>
+  <ul>
+    <% @received_messages.each do |message| %>
+      <li>
+        <strong>From:</strong> <%= message.sender.try(:name) || message.sender.email %><br>
+        <strong>Message:</strong> <%= truncate(message.body, length: 100) %><br>
+        <%= link_to 'View', message_path(message) %>
+        <%= button_to '🗑️ Delete', message_path(message), method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger' %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>You have no received messages.</p>
+<% end %>
+
+<hr>
+
+<h2>📤 Sent</h2>
+<% if @sent_messages.any? %>
+  <%= button_to '🧹 Clear All Sent Messages', clear_sent_messages_path, method: :delete, data: { turbo_confirm: 'Are you sure you want to delete all sent messages?' }, class: 'btn btn-outline-danger btn-sm', style: 'margin-bottom: 10px;' %>
+  <ul>
+    <% @sent_messages.each do |message| %>
+      <li>
+        <strong>To:</strong> <%= message.recipient.email %><br>
+        <strong>Message:</strong> <%= truncate(message.body, length: 100) %><br>
+        <%= link_to 'View', message_path(message) %>
+        <%= button_to '🗑️ Delete', message_path(message), method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger' %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>You have not sent any messages.</p>
+<% end %>
+
+<%= link_to 'Compose New Message', new_message_path, class: 'btn btn-primary', style: 'margin-top: 20px;' %>

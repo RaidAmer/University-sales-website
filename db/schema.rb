@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_20_081440) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_03_165809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,33 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_20_081440) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "sender_id", null: false
+    t.bigint "recipient_id", null: false
+    t.text "body"
+    t.boolean "read", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipient_id"], name: "index_messages_on_recipient_id"
+    t.index ["sender_id"], name: "index_messages_on_sender_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "recipient_type", null: false
+    t.bigint "recipient_id", null: false
+    t.string "actor_type"
+    t.bigint "actor_id"
+    t.string "action"
+    t.string "notifiable_type"
+    t.bigint "notifiable_id"
+    t.boolean "read", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_type", "actor_id"], name: "index_notifications_on_actor"
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"
+  end
+
   create_table "orders", force: :cascade do |t|
     t.float "total_price"
     t.integer "status"
@@ -112,6 +139,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_20_081440) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "preferences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "theme"
+    t.boolean "show_welcome"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "pattern"
+    t.string "role"
+    t.index ["user_id"], name: "index_preferences_on_user_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.float "price"
@@ -126,6 +164,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_20_081440) do
     t.index ["user_id"], name: "index_products_on_user_id"
   end
 
+  create_table "recipients", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "notification_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notification_id"], name: "index_recipients_on_notification_id"
+    t.index ["user_id"], name: "index_recipients_on_user_id"
+  end
+
   create_table "registrations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "event_id", null: false
@@ -133,6 +180,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_20_081440) do
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_registrations_on_event_id"
     t.index ["user_id"], name: "index_registrations_on_user_id"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.text "content"
+    t.integer "rating"
+    t.bigint "checkout_order_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["checkout_order_id"], name: "index_reviews_on_checkout_order_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -149,6 +205,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_20_081440) do
     t.boolean "approved"
     t.text "bio"
     t.boolean "admin"
+    t.string "role"
+    t.string "username"
+    t.string "location"
+    t.boolean "public_profile"
+    t.string "university_id"
+    t.text "admin_note"
+    t.string "theme"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
@@ -160,8 +223,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_20_081440) do
   add_foreign_key "cart_items", "checkout_orders"
   add_foreign_key "cart_items", "products"
   add_foreign_key "events", "users"
+  add_foreign_key "messages", "users", column: "recipient_id"
+  add_foreign_key "messages", "users", column: "sender_id"
+  add_foreign_key "preferences", "users"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "users"
+  add_foreign_key "recipients", "notifications"
+  add_foreign_key "recipients", "users"
   add_foreign_key "registrations", "events"
   add_foreign_key "registrations", "users"
+  add_foreign_key "reviews", "checkout_orders"
 end

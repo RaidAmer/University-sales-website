@@ -6,18 +6,25 @@
 #
 #  id                     :bigint           not null, primary key
 #  admin                  :boolean
+#  admin_note             :text
 #  approved               :boolean
 #  bio                    :text
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  first_name             :string
 #  last_name              :string
+#  location               :string
+#  public_profile         :boolean
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
+#  role                   :string
+#  theme                  :string
+#  username               :string
 #  uuid                   :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  university_id          :string
 #
 # Indexes
 #

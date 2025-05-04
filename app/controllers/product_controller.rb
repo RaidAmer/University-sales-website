@@ -32,7 +32,7 @@ class ProductController < ApplicationController
     end
   end
 
-  before_action :check_approval, only: %i[show new create]
+  before_action :check_approval, only: %i[index show new create]
 
   def check_approval
     unless user_signed_in?
@@ -42,6 +42,6 @@ class ProductController < ApplicationController
 
     return if current_user.approved?
 
-    redirect_to root_path, alert: 'You must be approved to view this product.'
+    redirect_to categories_path, alert: '⛔ You must be approved to view products.'
   end
 end

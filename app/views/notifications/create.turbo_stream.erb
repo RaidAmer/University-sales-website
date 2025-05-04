@@ -1,0 +1,15 @@
+<turbo-stream action="prepend" target="notification-list">
+  <template>
+    <%= render partial: "notifications/notification", locals: { notification: @notification } %>
+    <script>
+      window.dispatchEvent(new CustomEvent("notify", {
+        detail: { message: "🔔 You have a new notification" }
+      }))
+    </script>
+  </template>
+</turbo-stream>
+<turbo-stream action="update" target="notification-count">
+  <template>
+    <%= @notification.recipient.notifications.where(read: false).count %>
+  </template>
+</turbo-stream>

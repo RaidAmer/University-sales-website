@@ -15,6 +15,14 @@
         <strong><%= @product.user.first_name %> <%= @product.user.last_name %></strong>
       </p>
 
+
+<p> <%=@product.description%></p>
+<p><%= image_tag @product.image, width: 100, height: 100, alt: "#{@product.name} image" %></p>
+<p><%= number_to_currency(@product.price) %></p>
+<p><%=@product.status%></p>
+
+      <p class="text-muted mb-1">Sold by: <strong><%= @product.user.first_name %> <%= @product.user.last_name %></strong></p>
+
       <p class="mb-3"><%= @product.description %></p>
 
       <h4 class="text-success mb-2">$<%= '%.2f' % @product.price %></h4>

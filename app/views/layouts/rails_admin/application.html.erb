@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
   <body>
+    <div class="p-3">
+      <%= link_to "🏠 Back to Home", main_app.root_path, class: "btn btn-outline-primary me-2" %>
+      <button class="btn btn-outline-secondary" onclick="window.history.length > 1 ? history.back() : window.location.href='<%= main_app.profile_path %>'">⬅ Back</button>
+    </div>
     <%= yield %>
   </body>
 </html>

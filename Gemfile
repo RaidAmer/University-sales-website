@@ -130,4 +130,3 @@ gem 'rails_admin', '~> 3.1'
 
 
 gem "cssbundling-rails"
-gem "cssbundling-rails"

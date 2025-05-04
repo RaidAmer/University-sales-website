@@ -7,6 +7,14 @@ class ApplicationController < ActionController::Base
   end
 
   before_action :store_user_location!, if: :storable_location?
+  before_action :set_notifications
+  before_action :check_approval_status
+
+  def check_approval_status
+    if current_user && current_user.approved.nil? && request.path.start_with?("/products")
+      flash.now[:alert] = "Access denied. Please wait until your account is approved by an admin."
+    end
+  end
 
   protected
 
@@ -27,5 +35,11 @@ class ApplicationController < ActionController::Base
   # After login, redirect them back to that page
   def after_sign_in_path_for(resource_or_scope)
     stored_location_for(resource_or_scope) || root_path
+  end
+
+  private
+
+  def set_notifications
+    @notifications = current_user.notifications.where(read: false).order(created_at: :desc).limit(5) if current_user
   end
 end

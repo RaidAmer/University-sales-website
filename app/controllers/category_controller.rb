@@ -19,4 +19,9 @@ class CategoryController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
+
+  def show
+    @category = Category.find(params[:id])
+    render :show
+  end
 end

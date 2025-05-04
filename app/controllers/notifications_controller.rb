@@ -1,13 +1,18 @@
 class NotificationsController < ApplicationController
   def index
-    return redirect_to root_path if current_user.admin?
-
     base_scope = current_user.notifications
 
     # Filter out system/admin-only messages for non-admins
     unless current_user.admin?
       base_scope = base_scope.where.not(notifiable_type: "User").or(
         base_scope.where(action: ["approved your account", "denied your account"])
+      )
+    else
+      # Admins: exclude notifications about their own signups
+      base_scope = base_scope.where.not(
+        action: "signed up", actor_id: current_user.id
+      ).where.not(
+        action: "signed up and is pending approval", notifiable_id: current_user.id
       )
     end
 

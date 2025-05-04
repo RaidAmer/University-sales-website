@@ -1,21 +1,5 @@
 <h1>Your Messages</h1>
 
-<% if current_user.notifications.any? %>
-  <div class="alert alert-info" style="margin-bottom: 20px;">
-    <h5>🔔 Notifications</h5>
-    <ul class="list-unstyled">
-      <% current_user.notifications.order(created_at: :desc).limit(5).each do |notification| %>
-        <li>
-          <strong><%= notification.actor.email %>:</strong>
-          <%= notification.action %>
-          <br>
-          <small class="text-muted"><%= time_ago_in_words(notification.created_at) %> ago</small>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
-
 <%= turbo_stream_from "notifications" %>
 
 <h2>📥 Inbox</h2>

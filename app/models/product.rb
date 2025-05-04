@@ -40,8 +40,15 @@ class Product < ApplicationRecord
     inverse_of:  :products
   )
 
-  enum status: { Active: 0, Inactive: 1, Sold: 2 }
+  has_many(
+    :customer_reviews,
+    class_name:  'CustomerReview',
+    foreign_key: 'product_id',
+    inverse_of:  :product,
+    dependent:   :destroy
+  )
 
+  enum :status, { Active: 0, Inactive: 1, Sold: 2 }
 
   has_one_attached :image
 

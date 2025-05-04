@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-light shadow-sm">
+<file name=0 path=/Users/ellajoe/Desktop/project-REIJ/app/views/shared/_navbar.html.erb><nav class="navbar navbar-expand-lg bg-light shadow-sm">
   <div class="container-fluid">
     <%# <a class="navbar-brand" href="#">uCeb</a> %>
     <a class="navbar-brand fw-bold text-primary" href="/">UofM Arts and Craft</a>
@@ -28,7 +28,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               🔔
-              <% unread_count = current_user.notifications.where(read: false).count %>
+              <% unread_count = current_user.notifications.where(read: false).reject { |n| current_user.admin? && n.action.include?("signed up and is pending approval") }.count %>
               <% if unread_count > 0 %>
                 <span class="badge-wrapper position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                       style="font-size: 0.7rem;" id="notification-count">
@@ -39,6 +39,7 @@
             <ul id="notification-list" class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
               <% notifications = current_user.notifications.where(read: false).order(created_at: :desc).limit(5) %>
               <% notifications.each do |notification| %>
+                <% next if current_user.admin? && notification.action.include?("signed up and is pending approval") %>
                 <li class="dropdown-item">
                   <%= notification.actor&.first_name || "Someone" %> <%= notification.action %>
                   <small class="text-muted d-block"><%= time_ago_in_words(notification.created_at) %> ago</small>

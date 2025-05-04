@@ -5,9 +5,9 @@ user1 = User.find_or_initialize_by(uuid: "U00828281")
 user1.assign_attributes(
   password: "123456",
   password_confirmation: "123456",
-  first_name: "Ilham",
-  last_name: "Dinle",
-  email: "yhssein1@memphis.edu",
+  first_name: "Admin",
+  last_name: "Control",
+  email: "Admin@gmail.com",
   approved: true,
   admin: true
 )

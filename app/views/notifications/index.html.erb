@@ -33,7 +33,11 @@
               <%= link_to "📨 View Message", message_path(notification.notifiable_id), class: "btn btn-outline-secondary btn-sm" %>
             <% end %>
           <% elsif notification.notifiable_type == "Message" %>
-            📨 Admin sent you a message.
+            <% if notification.actor == current_user %>
+              📨 You sent a message.
+            <% else %>
+              📨 <%= notification.actor&.email || "Someone" %> sent you a message.
+            <% end %>
             <%= link_to "📨 View Message", message_path(notification.notifiable_id), class: "btn btn-outline-primary btn-sm mt-1" %>
           <% elsif notification.action&.include?("approved") %>
             ✅ Admin approved your account.

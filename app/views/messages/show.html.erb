@@ -1,8 +1,7 @@
-
 <h1>View Message</h1>
 
-<p><strong>From:</strong> <%= @message.sender.email %></p>
-<p><strong>To:</strong> <%= @message.recipient.email %></p>
+<p><strong>From:</strong> <%= @message.sender.respond_to?(:name) && @message.sender.name.present? ? @message.sender.name : @message.sender.email %></p>
+<p><strong>To:</strong> <%= @message.recipient.respond_to?(:name) && @message.recipient.name.present? ? @message.recipient.name : @message.recipient.email %></p>
 <p><strong>Sent At:</strong> <%= @message.created_at.strftime("%B %d, %Y %I:%M %p") %></p>
 <hr>
 <p><strong>Message:</strong></p>

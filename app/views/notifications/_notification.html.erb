@@ -7,7 +7,7 @@
       </h6>
       <p class="card-text">
         <% if notification.notifiable_type == "Message" %>
-          <%= link_to "📨 #{notification.actor.email} replied to your message", message_path(notification.notifiable_id) %>
+          <%= link_to "📨 #{notification.actor&.email || 'Someone'} sent you a message", message_path(notification.notifiable_id) %>
         <% elsif notification.notifiable_type == "User" %>
           A new user registered:
           <%= link_to notification.notifiable.email, "/admin/user/#{notification.notifiable_id}" %>

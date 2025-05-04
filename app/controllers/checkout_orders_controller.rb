@@ -25,9 +25,8 @@ class CheckoutOrdersController < ApplicationController
 
     total_price = cart.cart_items.sum { |item| item.product.price * item.quantity }
 
-    @checkout_order = CheckoutOrder.new(
+    @checkout_order = current_user.checkout_orders.build(
       total_price: total_price,
-      user_id:     current_user.id,
       status:      'Pending',
       order_date:  DateTime.now
     )
@@ -153,6 +152,6 @@ class CheckoutOrdersController < ApplicationController
   private
 
   def set_order
-    @order = current_user.checkout_orders.find(params[:id])
+    @order = CheckoutOrder.find(params[:id])
   end
 end

@@ -36,6 +36,7 @@ class User < ApplicationRecord
 
   has_many :checkout_orders
   has_many :products
+  has_one :cart, dependent: :destroy
   has_one_attached :avatar
   has_one_attached :banner
   has_one_attached :university_id
@@ -82,6 +83,8 @@ class User < ApplicationRecord
   after_create_commit :notify_admin_of_new_account
 
   def notify_admin_of_new_account
+    return if self.admin?
+
     admin = User.find_by(admin: true)
     if admin
       Notification.create!(

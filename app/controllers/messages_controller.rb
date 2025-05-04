@@ -22,10 +22,28 @@ class MessagesController < ApplicationController
         action: 'sent you a message',
         notifiable: @message
       )
-      redirect_to messages_path, notice: 'Message sent successfully.'
+      if params[:from_order_page] == 'true'
+        @checkout_order = CheckoutOrder.find(@message.checkout_order_id)
+        @messages = Message.where(checkout_order_id: @checkout_order.id).order(created_at: :asc)
+        respond_to do |format|
+          format.turbo_stream
+          format.html { redirect_to checkout_order_path(@checkout_order), notice: 'Message sent successfully.' }
+        end
+      else
+        redirect_to messages_path, notice: 'Message sent successfully.'
+      end
     else
-      @users = User.where.not(id: current_user.id)
-      render :new, status: :unprocessable_entity
+      if params[:from_order_page] == 'true'
+        @checkout_order = CheckoutOrder.find(@message.checkout_order_id)
+        @messages = Message.where(checkout_order_id: @checkout_order.id).order(created_at: :asc)
+        respond_to do |format|
+          format.turbo_stream { render 'checkout_orders/show', status: :unprocessable_entity }
+          format.html { render 'checkout_orders/show', status: :unprocessable_entity }
+        end
+      else
+        @users = User.where.not(id: current_user.id)
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
@@ -78,6 +96,6 @@ class MessagesController < ApplicationController
   end
 
   def message_params
-    params.require(:message).permit(:recipient_id, :body)
+    params.require(:message).permit(:recipient_id, :body, :checkout_order_id)
   end
 end

@@ -2,13 +2,15 @@
 #
 # Table name: messages
 #
-#  id           :bigint           not null, primary key
-#  body         :text
-#  read         :boolean          default(FALSE)
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  recipient_id :bigint           not null
-#  sender_id    :bigint           not null
+#  id                :bigint           not null, primary key
+#  body              :text
+#  read              :boolean          default(FALSE)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  checkout_order_id :integer
+#  event_id          :bigint
+#  recipient_id      :bigint           not null
+#  sender_id         :bigint           not null
 #
 # Indexes
 #
@@ -23,6 +25,7 @@
 class Message < ApplicationRecord
   belongs_to :sender, class_name: 'User'
   belongs_to :recipient, class_name: 'User'
+  belongs_to :event, optional: true  # Add this line to associate Message with Event
 
   validates :body, presence: true
 end

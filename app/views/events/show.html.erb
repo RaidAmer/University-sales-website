@@ -1,17 +1,38 @@
-<h1><strong><%= @event.event_name %></strong></h1>
-<p><strong>Organizer:</strong> <%= @event.user.first_name %> <%= @event.user.last_name %> (<%= @event.user.email %>)</p>
-<p>Location: <%= @event.location %></p>
-<p>Date: <%= @event.date.strftime("%m/%d/%Y") %></p>
-<p>Price: <%= @event.price == 0 ? "Free" : number_to_currency(@event.price) %></p>
+<h1 class="text-center mb-4"><strong><%= @event.event_name %></strong></h1>
 
-<% if @event.image.attached? %>
-    <%= image_tag @event.image, width: 300 %>
-<% else %>
-    <p>No image attached.</p>
+<% if flash[:notice] %>
+  <% if flash[:notice].include?("unregistered") %>
+    <div class="alert alert-danger mt-2 mb-3 text-center" role="alert">
+      <%= flash[:notice] %>
+    </div>
+  <% elsif flash[:notice].include?("registered") %>
+    <div class="alert alert-success mt-2 mb-3 text-center" role="alert">
+      <%= flash[:notice] %>
+    </div>
+  <% else %>
+    <div class="alert alert-info mt-2 mb-3 text-center" role="alert">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
 <% end %>
 
-<p><strong>Description:</strong></p>
-<p><%= @event.description.present? ? @event.description : "No description provided." %></p>
+<p class="lead"><strong>Organizer:</strong> <%= @event.user.first_name %> <%= @event.user.last_name %> (<%= @event.user.email %>)</p>
+<p><strong>Location:</strong> <%= @event.location %></p>
+<p><strong>Date:</strong> <%= @event.date.present? ? @event.date.strftime("%m/%d/%Y") : "Date not set" %></p>
+<p><strong>Price:</strong> <%= @event.price == 0 ? "Free" : number_to_currency(@event.price) %></p>
+
+<% if @event.image.attached? %>
+    <div class="text-center mb-4">
+        <%= image_tag @event.image, class: "img-fluid rounded shadow-sm", alt: "Event Image", width: "100%" %>
+    </div>
+<% else %>
+    <p class="text-center">No image attached.</p>
+<% end %>
+
+<div class="bg-light p-3 mb-3 rounded">
+    <p><strong>Description:</strong></p>
+    <p><%= @event.description.present? ? @event.description : "No description provided." %></p>
+</div>
 
 <% if user_signed_in? && @event.user == current_user %>
     <div class="d-flex gap-2 mt-3">
@@ -37,18 +58,21 @@
 <% end %>
 
 <p></p>
-<p><%= link_to "Back to Events", events_path, class: 'btn btn-primary' %></p>
+<p><%= link_to "Back to Events", events_path, class: 'btn btn-outline-primary' %></p>
 
 <% if user_signed_in? && current_user == @event.user %>
-    <h3>Registered Attendees:</h3>
+    <h3 class="mt-4">Registered Attendees:</h3>
 
     <% if @event.registered_users.any? %>
-        <ul>
+        <ul class="list-group">
             <% @event.registered_users.each do |user| %>
-                <li><%= user.first_name %> <%= user.last_name %> (<%= user.email %>)</li> <!-- Or user.name if you have that -->
+                <li class="list-group-item"><%= user.first_name %> <%= user.last_name %> (<%= user.email %>)</li>
             <% end %>
         </ul>
     <% else %>
         <p>No one has registered for this event yet.</p>
     <% end %>
 <% end %>
+
+
+<%= link_to 'Send Messages', event_messages_path(@event), class: 'btn btn-outline-secondary mt-4' %>

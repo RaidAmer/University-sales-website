@@ -1,0 +1,11 @@
+
+
+
+<% messages.each do |message| %>
+  <% bubble_class = message.sender == current_user ? 'bg-primary text-white ms-auto' : 'bg-light text-dark' %>
+  <div class="mb-3 p-3 rounded shadow-sm w-75 <%= bubble_class %>" style="max-width: 70%;">
+    <div class="fw-semibold small"><%= message.sender.email %></div>
+    <div><%= message.body %></div>
+    <div class="text-muted small text-end"><%= message.created_at.strftime("%b %d, %Y %I:%M %p") %></div>
+  </div>
+<% end %>

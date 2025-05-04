@@ -2,7 +2,7 @@
 
 class CartItemsController < ApplicationController
   def create
-    cart = Cart.find_or_create_by(user_id: 1)
+    cart = current_user.cart || Cart.create(user_id: current_user.id)
     product = Product.find(params[:product_id])
     cart_item = cart.cart_items.find_or_initialize_by(product: product)
     cart_item.quantity ||= 0

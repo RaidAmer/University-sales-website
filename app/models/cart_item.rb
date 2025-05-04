@@ -27,5 +27,5 @@
 class CartItem < ApplicationRecord
   belongs_to :cart
   belongs_to :product
-  belongs_to :checkout_orders, optional: true
+  belongs_to :checkout_order, optional: true
 end

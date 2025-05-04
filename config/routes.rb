@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get 'messages/index'
-  get 'messages/new'
-  get 'messages/create'
-  get 'messages/show'
-  get 'messages/reply'
-  get 'notifications/index'
   get 'admin/dashboard', to: 'admin_dashboard#index', as: 'admin_dashboard'
   resource :preferences, only: %i[edit update]
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
@@ -43,10 +37,14 @@ Rails.application.routes.draw do
     patch :update_quantity, on: :member
   end
 
-  resources :checkout_orders, only: %i[index show create] do
+resources :checkout_orders, only: %i[index show create destroy] do
     member do
-      patch :delivered
+      patch :mark_as_delivered
       patch :cancel
+      patch :confirm_delivery
+    end
+    collection do
+      delete :clear_all  # Add this route to handle the deletion of all orders
     end
   end
   resources :payment_transactions, only: %i[new create]
@@ -85,6 +83,7 @@ Rails.application.routes.draw do
   post 'events/:id/register', to: 'events#register', as: 'register_event'
   resources :events do
     post 'register', on: :member
+    resources :messages, only: [:create, :index]
   end
   post 'events/:id/unregister', to: 'events#unregister', as: 'unregister_event'
 

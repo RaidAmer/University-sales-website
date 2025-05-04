@@ -25,7 +25,7 @@ class MessagesController < ApplicationController
       redirect_to messages_path, notice: 'Message sent successfully.'
     else
       @users = User.where.not(id: current_user.id)
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 

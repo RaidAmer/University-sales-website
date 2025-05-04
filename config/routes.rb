@@ -59,6 +59,12 @@ resources :checkout_orders, only: %i[index show create destroy] do
   get 'categories/:category_id/products/new', to: 'product#new', as: 'new_category_product'
   get 'categories/:category_id/products/:id', to: 'product#show', as: 'category_product'
 
+  get 'categories/:category_id/products/:product_id/reviews', to: 'customer_reviews#index',
+                                                              as: 'category_product_reviews'
+  get '/categories/:category_id/products/:product_id/reviews/new', to: 'customer_reviews#new',
+                                                                   as: 'new_category_product_review'
+  post 'categories/:category_id/products/:product_id/reviews', to: 'customer_reviews#create'
+
   get 'categories', to: 'category#index', as: 'categories'
   post 'categories', to: 'category#create'
   get 'categories/new', to: 'category#new', as: 'new_category'
@@ -92,17 +98,17 @@ resources :checkout_orders, only: %i[index show create destroy] do
 
   delete 'notifications/clear_all', to: 'notifications#clear_all', as: 'clear_all_notifications'
   post 'notifications/mark_all_as_read', to: 'notifications#mark_all_as_read'
-  resources :notifications, only: [:index, :destroy]
+  resources :notifications, only: %i[index destroy]
 
   patch 'users/:id/theme', to: 'users#update_theme', as: 'update_user_theme'
 
-resources :messages do
-  collection do
-    delete :clear_inbox, to: 'messages#clear_inbox', as: :clear_inbox
-    delete :clear_sent, to: 'messages#clear_sent', as: :clear_sent
+  resources :messages do
+    collection do
+      delete :clear_inbox, to: 'messages#clear_inbox', as: :clear_inbox
+      delete :clear_sent, to: 'messages#clear_sent', as: :clear_sent
+    end
+    member do
+      post :reply
+    end
   end
-  member do
-    post :reply
-  end
-end
 end

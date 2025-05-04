@@ -1,4 +1,3 @@
-
 <% if flash[:alert].present? %>
   <div class="alert alert-warning"><%= flash[:alert] %></div>
 <% end %>
@@ -29,7 +28,6 @@
                   method: :patch,
                   class: "btn btn-sm btn-outline-primary px-1 py-0" %>
 
-
             <span class="mx-2"><%= item.quantity %></span>
 
             <%= button_to "–", update_quantity_cart_item_path(item, quantity: item.quantity - 1),
@@ -55,7 +53,7 @@
 
   <%= form_with url: checkout_orders_path, method: :post do |f| %>
     <%= hidden_field_tag :total_price, @total %>
-    <%= hidden_field_tag :user_id, 1 %>
+    <%= hidden_field_tag :user_id, current_user.id %>  <!-- use current_user.id here -->
     <%= f.submit "Proceed to Payment", class: "btn btn-primary" %>
   <% end %>
 <% else %>

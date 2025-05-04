@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CheckoutOrdersController < ApplicationController
-  before_action :set_order, only: [:show, :cancel, :mark_as_delivered, :destroy]
+  before_action :authenticate_user!
 
   def index
     @checkout_orders = current_user.checkout_orders.order(id: :desc)
@@ -16,26 +16,30 @@ class CheckoutOrdersController < ApplicationController
   end
 
   def create
+    Rails.logger.debug "=== Checkout Order Debug ==="
+    Rails.logger.debug "current_user: #{current_user&.id || 'nil'}"
+    Rails.logger.debug "existing cart: #{current_user&.cart&.id || 'none'}"
+
     cart = current_user.cart
     if cart.cart_items.empty?
       flash[:alert] = 'Your cart is empty.'
       redirect_to cart_path and return
     end
 
-
     total_price = cart.cart_items.sum { |item| item.product.price * item.quantity }
 
     @checkout_order = current_user.checkout_orders.build(
       total_price: total_price,
-      status:      'Pending',
-      order_date:  DateTime.now
+      status: 'Pending',
+      order_date: DateTime.now
     )
 
     if @checkout_order.save
+      # Link cart items to the newly created order
       cart.cart_items.where(checkout_order_id: nil).update_all(checkout_order_id: @checkout_order.id)
 
+      # Create notifications
       product_names = cart.cart_items.includes(:product).map { |item| item.product&.name || 'Unnamed Item' }
-
       Notification.create!(
         recipient: cart.cart_items.first&.product&.user,
         actor: current_user,
@@ -101,57 +105,38 @@ class CheckoutOrdersController < ApplicationController
   end
 
   def mark_as_delivered
-    @checkout_order = CheckoutOrder.find(params[:id])
-    @checkout_order.update(status: "Delivered")
-
-    Notification.create!(
-      recipient: @checkout_order.user,
-      actor: current_user,
-      action: "Your order has been delivered",
-      notifiable: @checkout_order
-    )
-
-    flash[:notice] = "Order marked as delivered."
-    redirect_to checkout_order_path(@checkout_order)
-  end
-
-  def confirm_delivery
-    @checkout_order = CheckoutOrder.find(params[:id])
-    confirmed = params[:buyer_confirmed] == "1"
-
-    if @checkout_order.update(buyer_confirmed: confirmed)
-      seller = @checkout_order.cart_items.first&.product&.user
-      if seller.present?
-        Notification.create!(
-          recipient: seller,
-          actor: current_user,
-          action: confirmed ? "confirmed delivery of the order" : "reported order as not delivered",
-          notifiable: @checkout_order
-        )
-      end
-      flash[:notice] = confirmed ? 'You confirmed delivery.' : 'You reported this order as not delivered.'
+    @checkout_order = current_user.checkout_orders.find(params[:id])
+    if @checkout_order.update(status: 'Delivered')
+      flash[:notice] = 'Order marked as delivered.'
     else
-      flash[:alert] = 'Failed to update delivery confirmation.'
+      flash[:error] = 'There was an issue marking the order as delivered.'
     end
     redirect_to checkout_orders_path
   end
 
-  # DELETE /checkout_orders/:id
-  def destroy
+  def confirm_delivery
     @checkout_order = current_user.checkout_orders.find(params[:id])
-    @checkout_order.destroy
-    redirect_to checkout_orders_path, notice: 'Order was successfully deleted.'
+    if @checkout_order.update(confirmed_delivery: true)
+      flash[:notice] = 'Delivery confirmed!'
+    else
+      flash[:alert] = 'There was an issue confirming the delivery.'
+    end
+    redirect_to checkout_orders_path
   end
 
-  # DELETE /checkout_orders/clear_all
+  def destroy
+    @checkout_order = CheckoutOrder.find(params[:id])
+    if @checkout_order.destroy
+      flash[:notice] = 'Order successfully deleted.'
+    else
+      flash[:error] = 'There was an issue deleting the order.'
+    end
+    redirect_to checkout_orders_path
+  end
+
   def clear_all
     current_user.checkout_orders.destroy_all
-    redirect_to checkout_orders_path, notice: 'All orders have been cleared.'
-  end
-
-  private
-
-  def set_order
-    @order = CheckoutOrder.find(params[:id])
+    flash[:notice] = 'All orders have been cleared.'
+    redirect_to checkout_orders_path
   end
 end

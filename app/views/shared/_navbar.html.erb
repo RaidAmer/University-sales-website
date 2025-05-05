@@ -1,7 +1,9 @@
 <nav class="navbar navbar-expand-lg bg-light shadow-sm">
   <div class="container-fluid">
-    <%# <a class="navbar-brand" href="#">uCeb</a> %>
-    <a class="navbar-brand fw-bold text-primary" href="/">UofM Arts and Craft</a>
+    <%= link_to root_path, class: "navbar-brand" do %>
+      <%= image_tag("tiger_arts.png", alt: "UofM Arts and Craft", height: "60", class: "d-inline-block align-text-top") %>
+    <% end %>
+
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -10,19 +12,19 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <%= link_to "Home", categories_path, class: "nav-link active" %>
+          <%= link_to "Home", categories_path, class: "nav-link active fs-5" %>
         </li>
         <li class="nav-item">
-          <%= link_to "Events", events_path, class: "nav-link active" %>
+          <%= link_to "Events", events_path, class: "nav-link active fs-5" %>
         </li>
         <% if user_signed_in? && current_user.approved? %>
           <li class="nav-item">
-            <%= link_to "Seller Dashboard", seller_dashboard_path, class: "nav-link active" %>
+            <%= link_to "Seller Dashboard", seller_dashboard_path, class: "nav-link active fs-5" %>
           </li>
         <% end %>
       </ul>
 
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto fs-5">
         <% if user_signed_in? %>
           <!-- Notifications -->
           <li class="nav-item dropdown">
@@ -58,7 +60,7 @@
             </ul>
           </li>
           <!-- My Account Dropdown -->
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown fs-5">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <% if current_user.avatar.attached? %>
                 <%= image_tag current_user.avatar, width: 30, height: 30, class: "rounded-circle ms-2", alt: "User Avatar", style: "object-fit: cover;" %>
@@ -94,7 +96,7 @@
           
 
           <li class="nav-item">
-            <%= link_to "🛒 My Cart", cart_path, class: "nav-link" %>
+            <%= link_to "🛒 My Cart", cart_path, class: "nav-link fs-5" %>
           </li>
 
         <% else %>

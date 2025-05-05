@@ -1,11 +1,6 @@
 <h1 class="fw-bold mb-4">
   Order #<%= @checkout_order.id %>
   <% first_item = @checkout_order.cart_items.first %>
-  <% if first_item&.product.present? %>
-    — <%= first_item.product.name.titleize %>
-  <% else %>
-    — <em>No product found</em>
-  <% end %>
 </h1>
 
 <p><strong>Date:</strong> <%= @checkout_order.order_date.strftime("%B %d, %Y") %></p>

@@ -16,9 +16,9 @@ class CheckoutOrdersController < ApplicationController
   end
 
   def create
-    Rails.logger.debug "=== Checkout Order Debug ==="
-    Rails.logger.debug "current_user: #{current_user&.id || 'nil'}"
-    Rails.logger.debug "existing cart: #{current_user&.cart&.id || 'none'}"
+    Rails.logger.debug '=== Checkout Order Debug ==='
+    Rails.logger.debug { "current_user: #{current_user&.id || 'nil'}" }
+    Rails.logger.debug { "existing cart: #{current_user&.cart&.id || 'none'}" }
 
     cart = current_user.cart
     if cart.cart_items.empty?
@@ -30,8 +30,8 @@ class CheckoutOrdersController < ApplicationController
 
     @checkout_order = current_user.checkout_orders.build(
       total_price: total_price,
-      status: 'Pending',
-      order_date: DateTime.now
+      status:      'Placed',
+      order_date:  DateTime.now
     )
 
     if @checkout_order.save
@@ -41,12 +41,12 @@ class CheckoutOrdersController < ApplicationController
       # Create notifications
       product_names = cart.cart_items.includes(:product).map { |item| item.product&.name || 'Unnamed Item' }
       Notification.create!(
-        recipient: cart.cart_items.first&.product&.user,
-        actor: current_user,
-        action: "purchased your item(s)",
-        metadata: { product_names: product_names },
+        recipient:  cart.cart_items.first&.product&.user,
+        actor:      current_user,
+        action:     'purchased your item(s)',
+        metadata:   { product_names: product_names },
         notifiable: @checkout_order,
-        read: false
+        read:       false
       )
 
       flash[:notice] = 'Order successfully placed!'
@@ -63,9 +63,9 @@ class CheckoutOrdersController < ApplicationController
 
     if (first_item = @checkout_order.cart_items.first) && first_item.product && first_item.product.user
       Notification.create!(
-        recipient: @checkout_order.user,
-        actor: first_item.product.user,
-        action: 'marked your order as delivered',
+        recipient:  @checkout_order.user,
+        actor:      first_item.product.user,
+        action:     'marked your order as delivered',
         notifiable: @checkout_order
       )
     end
@@ -85,20 +85,28 @@ class CheckoutOrdersController < ApplicationController
     seller = @checkout_order.cart_items.first&.product&.user
     if seller.present? && seller != current_user
       Notification.create!(
-        recipient: seller,
-        actor: current_user,
-        action: "cancelled their order for #{@checkout_order.cart_items.first.product.name rescue 'a product'}",
+        recipient:  seller,
+        actor:      current_user,
+        action:     "cancelled their order for #{begin
+          @checkout_order.cart_items.first.product.name
+        rescue StandardError
+          'a product'
+        end}",
         notifiable: @checkout_order,
-        read: false
+        read:       false
       )
     end
 
     Notification.create!(
-      recipient: @checkout_order.user,
-      actor: current_user,
-      action: "cancelled an order you placed for #{@checkout_order.cart_items.first.product.name rescue 'a product'}",
+      recipient:  @checkout_order.user,
+      actor:      current_user,
+      action:     "cancelled an order you placed for #{begin
+        @checkout_order.cart_items.first.product.name
+      rescue StandardError
+        'a product'
+      end}",
       notifiable: @checkout_order,
-      read: false
+      read:       false
     )
     flash[:notice] = 'Order has been cancelled.'
     redirect_to checkout_orders_path
@@ -121,22 +129,6 @@ class CheckoutOrdersController < ApplicationController
     else
       flash[:alert] = 'There was an issue confirming the delivery.'
     end
-    redirect_to checkout_orders_path
-  end
-
-  def destroy
-    @checkout_order = CheckoutOrder.find(params[:id])
-    if @checkout_order.destroy
-      flash[:notice] = 'Order successfully deleted.'
-    else
-      flash[:error] = 'There was an issue deleting the order.'
-    end
-    redirect_to checkout_orders_path
-  end
-
-  def clear_all
-    current_user.checkout_orders.destroy_all
-    flash[:notice] = 'All orders have been cleared.'
     redirect_to checkout_orders_path
   end
 end

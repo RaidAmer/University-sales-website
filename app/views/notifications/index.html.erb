@@ -102,9 +102,14 @@
             <%= link_to (notification.notifiable.try(:event_name) || notification.notifiable.try(:title) || "an event"), event_path(notification.notifiable_id), class: "text-decoration-underline" %>
             <span class="text-muted">— <%= time_ago_in_words(notification.created_at) %> ago</span>
           <% else %>
-            📝 <%= notification.actor&.email || "Someone" %> registered for your event
-            <%= link_to (notification.notifiable.try(:event_name) || notification.notifiable.try(:title) || "an event"), event_path(notification.notifiable_id), class: "text-decoration-underline" %>
-            <span class="text-muted">— <%= time_ago_in_words(notification.created_at) %> ago</span>
+            <% if notification.notifiable_type == "CheckoutOrder" %>
+              📦 <%= notification.action %>
+              <%= link_to "📄 View Order", checkout_order_path(notification.notifiable_id), class: "btn btn-outline-primary btn-sm mt-1" %>
+            <% else %>
+              📝 <%= notification.actor&.email || "Someone" %> registered for your event
+              <%= link_to (notification.notifiable.try(:event_name) || notification.notifiable.try(:title) || "an event"), event_path(notification.notifiable_id), class: "text-decoration-underline" %>
+              <span class="text-muted">— <%= time_ago_in_words(notification.created_at) %> ago</span>
+            <% end %>
           <% end %>
         </p>
       </div>

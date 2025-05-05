@@ -18,18 +18,15 @@ class CartItemsController < ApplicationController
       end
 
       # Find or initialize a CartItem for this product in the user's cart
-      cart_item = cart.cart_items.find_or_initialize_by(product: product)
+      cart_item = cart.cart_items.find_or_initialize_by(product_id: params[:product_id])
       cart_item.quantity ||= 0
       cart_item.quantity += 1
-
-      # Ensure a checkout_order is assigned to the CartItem
-      checkout_order = CheckoutOrder.first # Or create a new checkout order as needed
-      cart_item.checkout_order = checkout_order if checkout_order
 
       # Save the CartItem and provide feedback
       if cart_item.save
         flash[:notice] = "Item added to cart successfully."
       else
+        Rails.logger.error "CartItem save failed: #{cart_item.errors.full_messages.join(', ')}"
         flash[:error] = "There was an error adding the item to your cart."
       end
     else

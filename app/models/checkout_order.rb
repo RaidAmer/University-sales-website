@@ -25,7 +25,19 @@ class CheckoutOrder < ApplicationRecord
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }
   validates :order_date, presence: true
   validate :order_date_must_be_today
+  before_validation :set_order_date, on: :create
+  validate :must_have_items
   after_create :notify_sellers_of_purchase
+
+  def set_order_date
+    self.order_date ||= Time.zone.today
+  end
+
+  def must_have_items
+    if cart_items.empty?
+      errors.add(:base, "Order must include at least one item.")
+    end
+  end
 
   private
 

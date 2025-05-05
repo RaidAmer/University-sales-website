@@ -25,7 +25,9 @@
 #  fk_rails_...  (product_id => products.id)
 #
 class CartItem < ApplicationRecord
-  belongs_to :cart
+  belongs_to :cart, optional: true
   belongs_to :product
-  belongs_to :checkout_order
+  belongs_to :checkout_order, optional: true
+
+  validates :quantity, numericality: { greater_than: 0 }
 end

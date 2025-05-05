@@ -51,11 +51,7 @@
 
   <p><strong>Total:</strong> $<%= '%.2f' % @total %></p>
 
-  <%= form_with url: checkout_orders_path, method: :post do |f| %>
-    <%= hidden_field_tag :total_price, @total %>
-    <%= hidden_field_tag :user_id, current_user.id %>  <!-- use current_user.id here -->
-    <%= f.submit "Proceed to Payment", class: "btn btn-primary" %>
-  <% end %>
+  <%= button_to "Proceed to Payment", checkout_orders_path, method: :post, class: "btn btn-primary" %>
 <% else %>
   <div class="alert alert-warning">Your cart is empty.</div>
 <% end %>

@@ -25,6 +25,17 @@ class CheckoutOrder < ApplicationRecord
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }
   validates :order_date, presence: true
   validate :order_date_must_be_today
+
+  validate :all_items_must_have_sellers
+
+  def all_items_must_have_sellers
+    cart_items.each do |item|
+      if item.product.nil? || item.product.user.nil?
+        errors.add(:base, "Each item in the order must belong to a seller.")
+      end
+    end
+  end
+
   after_create :notify_sellers_of_purchase
 
   private

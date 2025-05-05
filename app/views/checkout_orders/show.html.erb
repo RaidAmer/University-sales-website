@@ -1,3 +1,5 @@
+<% if @checkout_order.user_id == current_user.id %>
+  <!-- Buyer View -->
 <h1 class="fw-bold mb-4">
   Order #<%= @checkout_order.id %>
   <% if @checkout_order.cart_items.first&.product&.name.present? %>
@@ -12,10 +14,6 @@
 
 <p><strong>Status:</strong> <%= @checkout_order.status %></p>
 
-<% if @checkout_order.cart_items.any? && @checkout_order.cart_items.first&.product&.user == current_user && !["Delivered", "Cancelled"].include?(@checkout_order.status) %>
-  <%= button_to "Mark as Delivered", mark_as_delivered_checkout_order_path(@checkout_order), method: :patch, class: "btn btn-success my-2", data: { turbo: false } %>
-  <%= button_to "Cancel Order", cancel_checkout_order_path(@checkout_order), method: :patch, class: "btn btn-danger my-2", data: { turbo: false } %>
-<% end %>
 
 <p><strong>Subtotal:</strong> <%= number_to_currency(@checkout_order.total_price) %></p>
 <% tax         = (@checkout_order.total_price * 0.07).round(2) %>
@@ -49,3 +47,39 @@
     <%= link_to "💬 Message the Seller", messages_path(order_id: @checkout_order.id), class: "btn btn-outline-primary" %>
   <% end %>
 </div>
+<% elsif @checkout_order.cart_items.any? { |item| item.product&.user_id == current_user.id } %>
+  <!-- Seller View -->
+  <h1 class="fw-bold mb-4">Order #<%= @checkout_order.id %> — Seller View</h1>
+  <p><strong>Date:</strong> <%= @checkout_order.order_date.strftime("%B %d, %Y") %></p>
+  <p><strong>Time:</strong> <%= @checkout_order.order_date.strftime("%I:%M %p") %></p>
+  <p><strong>Status:</strong> <%= @checkout_order.status %></p>
+
+  <% @checkout_order.cart_items.each do |item| %>
+    <% product = item.product %>
+    <div class="card mb-3 d-flex flex-row align-items-center" style="gap: 1rem;">
+      <% if product.image.attached? %>
+        <%= image_tag product.image.variant(resize_to_limit: [100, 100]), class: "rounded shadow-sm" %>
+      <% end %>
+      <div>
+        <h5 class="mb-1"><%= product.name %></h5>
+        <p class="mb-0 text-muted">Quantity: <%= item.quantity %></p>
+        <p class="mb-0 text-muted">Unit Price: <%= number_to_currency(product.price) %></p>
+        <p class="mb-0 text-muted">Buyer: <%= @checkout_order.user.email %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <% if !["Delivered", "Cancelled"].include?(@checkout_order.status) %>
+    <%= button_to "Mark as Delivered", mark_as_delivered_checkout_order_path(@checkout_order), method: :patch, class: "btn btn-success my-2", data: { turbo: false } %>
+    <%= button_to "Cancel Order", cancel_checkout_order_path(@checkout_order), method: :patch, class: "btn btn-danger my-2", data: { turbo: false } %>
+  <% end %>
+
+  <%= link_to "Back to Seller Dashboard", seller_dashboard_path, class: 'btn btn-primary' %>
+
+  <hr>
+  <div class="mt-4">
+    <%= link_to "💬 Message the Buyer", messages_path(order_id: @checkout_order.id), class: "btn btn-outline-primary" %>
+  </div>
+<% else %>
+  <p>You are not authorized to view this order.</p>
+<% end %>

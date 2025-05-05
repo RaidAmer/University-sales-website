@@ -153,6 +153,14 @@ class CheckoutOrdersController < ApplicationController
   private
 
   def set_order
-    @order = current_user.checkout_orders.find(params[:id])
+    order = CheckoutOrder.find(params[:id])
+    is_buyer = order.user_id == current_user.id
+    is_seller = order.cart_items.any? { |item| item.product&.user_id == current_user.id }
+
+    if is_buyer || is_seller
+      @order = order
+    else
+      redirect_to checkout_orders_path, alert: "You are not authorized to view this order."
+    end
   end
 end

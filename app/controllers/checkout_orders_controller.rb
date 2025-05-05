@@ -201,4 +201,17 @@ class CheckoutOrdersController < ApplicationController
     flash[:notice] = 'All orders have been cleared.'
     redirect_to checkout_orders_path
   end
+  private
+
+  def set_order
+    order = CheckoutOrder.find(params[:id])
+    is_buyer = order.user_id == current_user.id
+    is_seller = order.cart_items.any? { |item| item.product&.user_id == current_user.id }
+
+    if is_buyer || is_seller
+      @order = order
+    else
+      redirect_to checkout_orders_path, alert: "You are not authorized to view this order."
+    end
+  end
 end

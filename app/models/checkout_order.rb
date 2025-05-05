@@ -4,14 +4,15 @@
 #
 # Table name: checkout_orders
 #
-#  id              :bigint           not null, primary key
-#  buyer_confirmed :boolean
-#  order_date      :datetime
-#  status          :string
-#  total_price     :float
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  user_id         :integer
+#  id                 :bigint           not null, primary key
+#  buyer_confirmed    :boolean
+#  confirmed_delivery :boolean
+#  order_date         :datetime
+#  status             :string
+#  total_price        :float
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  user_id            :integer
 #
 class CheckoutOrder < ApplicationRecord
   belongs_to :user

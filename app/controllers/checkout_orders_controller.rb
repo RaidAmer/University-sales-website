@@ -179,6 +179,16 @@ class CheckoutOrdersController < ApplicationController
   def confirm_delivery
     @checkout_order = current_user.checkout_orders.find(params[:id])
     if @checkout_order.update(confirmed_delivery: true)
+      seller = @checkout_order.cart_items.first&.product&.user
+      if seller.present? && seller != current_user
+        Notification.create!(
+          recipient:  seller,
+          actor:      current_user,
+          action:     "confirmed delivery of",
+          notifiable: @checkout_order,
+          read:       false
+        )
+      end
       flash[:notice] = 'Delivery confirmed!'
     else
       flash[:alert] = 'There was an issue confirming the delivery.'

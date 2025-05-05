@@ -1,5 +1,5 @@
 <% if @buyer_orders.present? %>
-  <h1>My Orders</h1>
+  <h1>My Orders </h1>
   <table class='table table-hover'>
     <thead class='table-primary'>
       <tr>
@@ -7,6 +7,7 @@
         <th>Total Price</th>
         <th>Date</th>
         <th>Status</th>
+        <th>Delivered?</th>
         <th></th>
       </tr>
     </thead>
@@ -16,7 +17,18 @@
           <td></td>
           <td><%= number_to_currency((order.total_price * 1.07).round(2)) %></td>
           <td><%= order.order_date&.strftime("%B %d, %Y") || "Date not set" %></td>
-          <td><%= order.status %></td>
+          <td>
+            <% if order.confirmed_delivery %>
+              Confirmed Delivered
+            <% else %>
+              <%= order.status %>
+            <% end %>
+          </td>
+          <td>
+            <%= form_with url: confirm_delivery_checkout_order_path(order), method: :patch, local: true do %>
+              <%= check_box_tag "confirmed_delivery", true, order.confirmed_delivery, onchange: "this.form.submit()" %>
+            <% end %>
+          </td>
           <td><%= link_to "View Order", checkout_order_path(order), class: 'btn btn-primary' %></td>
         </tr>
       <% end %>
@@ -25,7 +37,8 @@
 <% end %>
 
 <% if @seller_orders.present? %>
-  <h1>Customer Orders</h1>
+  <hr>
+  <h1>Customer Orders </h1>
   <table class='table table-hover'>
     <thead class='table-primary'>
       <tr>

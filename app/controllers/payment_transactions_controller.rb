@@ -2,15 +2,8 @@
 
 class PaymentTransactionsController < ApplicationController
   def new
-    @checkout_order = CheckoutOrder.find_by(id: params[:checkout_order_id])
-
-    unless @checkout_order
-      redirect_to cart_path, alert: 'Invalid or missing order. Please try again.'
-      return
-    end
-
     @payment_transaction = PaymentTransaction.new
-    @total = @checkout_order.total_price
+    @total = current_cart.cart_items.sum { |item| item.product.price * item.quantity } if current_cart.present?
     @cart_items = current_cart.present? ? current_cart.cart_items : []
     @payment_transaction = PaymentTransaction.new
   end
@@ -30,6 +23,23 @@ class PaymentTransactionsController < ApplicationController
         return render :new
       end
     end
+
+    @checkout_order = CheckoutOrder.new(
+      user: current_user,
+      order_date: Time.zone.now,
+      status: 'Placed'
+    )
+
+    # Associate cart items to the order
+    if current_cart.present?
+      current_cart.cart_items.where(checkout_order_id: nil).each do |item|
+        item.checkout_order = @checkout_order
+        item.save
+      end
+    end
+
+    @checkout_order.save
+    @payment_transaction.checkout_order = @checkout_order
 
     if @payment_transaction.save
       CartItem.where(cart_id: current_cart.id, checkout_order_id: nil).destroy_all if current_cart.present?

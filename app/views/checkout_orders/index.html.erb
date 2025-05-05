@@ -18,8 +18,12 @@
           <td><%= number_to_currency((order.total_price * 1.07).round(2)) %></td>
           <td><%= order.order_date&.strftime("%B %d, %Y") || "Date not set" %></td>
           <td>
-            <% if order.confirmed_delivery %>
-              Confirmed Delivered
+            <% if order.status == 'Cancelled' %>
+              Cancelled by Seller
+            <% elsif order.status == 'Delivered' %>
+              Marked Delivered by Seller
+            <% elsif order.confirmed_delivery %>
+              Confirmed Delivered by Buyer
             <% else %>
               <%= order.status %>
             <% end %>

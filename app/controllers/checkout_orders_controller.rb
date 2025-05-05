@@ -131,4 +131,20 @@ class CheckoutOrdersController < ApplicationController
     end
     redirect_to checkout_orders_path
   end
+
+  def destroy
+    @checkout_order = CheckoutOrder.find(params[:id])
+    if @checkout_order.destroy
+      flash[:notice] = 'Order successfully deleted.'
+    else
+      flash[:error] = 'There was an issue deleting the order.'
+    end
+    redirect_to checkout_orders_path
+  end
+
+  def clear_all
+    current_user.checkout_orders.destroy_all
+    flash[:notice] = 'All orders have been cleared.'
+    redirect_to checkout_orders_path
+  end
 end

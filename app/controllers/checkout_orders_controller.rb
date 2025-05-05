@@ -79,7 +79,6 @@ class CheckoutOrdersController < ApplicationController
           read:       false
         )
 
-        flash[:notice] = 'Order successfully placed!'
         redirect_to new_payment_transaction_path(checkout_order_id: @checkout_order.id) and return
       end
     rescue => e

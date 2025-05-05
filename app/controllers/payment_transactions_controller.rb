@@ -33,7 +33,7 @@ class PaymentTransactionsController < ApplicationController
 
     if @payment_transaction.save
       CartItem.where(cart_id: current_cart.id, checkout_order_id: nil).destroy_all if current_cart.present?
-      flash[:notice] = 'Payment Successful'
+      flash[:notice] = 'Order successfully placed!'
       redirect_to categories_path
     else
       flash.now[:error] = 'Payment Failed'

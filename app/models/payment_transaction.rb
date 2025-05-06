@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: payment_transactions
@@ -13,4 +15,5 @@
 #  checkout_order_id :integer
 #
 class PaymentTransaction < ApplicationRecord
+  belongs_to :checkout_order
 end

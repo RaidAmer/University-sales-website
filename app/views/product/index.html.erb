@@ -21,7 +21,7 @@
             <h5 class="card-title product-name mb-2">
               <%= link_to product.name, category_product_path(@category, product), class: "stretched-link text-decoration-none" %>
             </h5>
-            <p class="card-text fw-bold mb-0">$<%= product.price %></p>
+            <p class="card-text fw-bold mb-0"><%= number_to_currency(product.price) %></p>
           </div>
         </div>
       </div>

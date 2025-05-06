@@ -39,12 +39,12 @@ categories = [
 
 categories.each do |cat_data|
 
-  category = Category.create!(
-    name:        cat_data[:name],
+  category = Category.find_or_initialize_by(name: cat_data[:name])
+  category.assign_attributes(
     description: cat_data[:description],
     is_featured: cat_data[:is_featured]
   )
-
+  category.save!
 
   # Attach category image
   cat_image_path = Rails.root.join("app/assets/images/categories/#{cat_data[:icon]}")
@@ -58,24 +58,29 @@ categories.each do |cat_data|
 
   # Seed products
   cat_data[:products].each do |prod_data|
-    product = category.products.build(
+    product = Product.find_or_initialize_by(
       name: prod_data[:name],
+      category_id: category.id,
+      user_id: prod_data[:user].id
+    )
+    product.assign_attributes(
       price: prod_data[:price],
       status: prod_data[:status],
       description: prod_data[:description],
       user: prod_data[:user]
     )
 
-    prod_image_path = Rails.root.join("app/assets/images/products/#{prod_data[:image]}")
-    file_data = File.binread(prod_image_path)
-    product.image.attach(
-      io:           StringIO.new(file_data),
-      filename:     prod_data[:image],
-      content_type: Marcel::MimeType.for(StringIO.new(file_data), name: prod_data[:image])
-    )
+    unless product.image.attached?
+      prod_image_path = Rails.root.join("app/assets/images/products/#{prod_data[:image]}")
+      file_data = File.binread(prod_image_path)
+      product.image.attach(
+        io:           StringIO.new(file_data),
+        filename:     prod_data[:image],
+        content_type: Marcel::MimeType.for(StringIO.new(file_data), name: prod_data[:image])
+      )
+    end
 
     product.save!
   end
 
 end
-

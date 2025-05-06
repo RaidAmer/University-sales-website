@@ -8,8 +8,15 @@ class EventsController < ApplicationController
   end
 
   def show
-    @event = Event.find(params[:id])
-    render :show
+    @event = Event.find_by(id: params[:id])
+    if @event.nil?
+      flash[:alert] = 'Event not found.'
+      redirect_to events_path
+    else
+      @message = Message.new
+      @messages = @event.messages.includes(:sender).order(created_at: :asc)
+      render :show
+    end
   end
 
   def new
@@ -23,13 +30,11 @@ class EventsController < ApplicationController
   end
 
   def create
-    @event = current_user.events.build(params.require(:event).permit(:event_name, :location, :price, :date, :capacity,
-                                                                     :description, :image))
+    @event = current_user.events.build(event_params)
+
     if @event.save
-      flash[:success] = 'New event successfully created!'
-      redirect_to events_url
+      redirect_to @event, notice: 'Event was successfully created.'
     else
-      flash.now[:error] = 'Event creation failed.'
       render :new, status: :unprocessable_entity
     end
   end
@@ -47,10 +52,24 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    @event = Event.find(params[:id])
-    @event.destroy
-    flash[:success] = 'The event was successfully deleted.'
-    redirect_to events_url, status: :see_other
+    begin
+      @event = Event.find(params[:id])
+      # Notify all registered users
+      @event.registered_users.each do |user|
+        Notification.create!(
+          recipient: user,
+          actor: current_user,
+          action: 'deleted an event you registered for',
+          notifiable: @event
+        )
+      end
+      @event.destroy
+      flash[:success] = 'The event was successfully deleted.'
+      redirect_to events_url, status: :see_other
+    rescue ActiveRecord::RecordNotFound
+      flash[:alert] = 'Event not found.'
+      redirect_to events_url
+    end
   end
 
   def register
@@ -61,7 +80,17 @@ class EventsController < ApplicationController
         flash[:notice] = 'You have already registered for this event.'
       else
         @event.registered_users << current_user
-        flash[:success] = 'Successfully registered!'
+        flash[:notice] = 'Successfully registered for the event!'
+
+        # Create a notification for the event creator
+        if @event.user != current_user  # Ensure creator is not the same as the registrant
+          Notification.create!(
+            recipient: @event.user,  # Event creator
+            actor: current_user,     # User registering
+            action: 'registered for your event',
+            notifiable: @event
+          )
+        end
       end
     else
       flash[:alert] = 'You must be approved to register.'
@@ -76,6 +105,16 @@ class EventsController < ApplicationController
     if @event.registered_users.include?(current_user)
       @event.registered_users.delete(current_user)
       flash[:notice] = 'You have been unregistered from the event.'
+
+      # Create a notification for the event creator
+      if @event.user != current_user  # Ensure creator is not the same as the unregistering user
+        Notification.create!(
+          recipient: @event.user,  # Event creator
+          actor: current_user,     # User unregistering
+          action: 'unregistered from your event',
+          notifiable: @event
+        )
+      end
     else
       flash[:alert] = 'You are not registered for this event.'
     end
@@ -105,4 +144,12 @@ class EventsController < ApplicationController
     flash[:alert] = 'You are not authorized to modify this event.'
     redirect_to events_path
   end
+
+  def event_params
+    params.require(:event).permit(:event_name, :location, :price, :date, :capacity, :description)
+  end
+
+  # def message_params
+  #   params.require(:message).permit(:body)
+  # end
 end

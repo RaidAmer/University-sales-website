@@ -1,14 +1,25 @@
 <h1>Create New Event</h1>
 
-<%= bootstrap_form_with(model: @event, local: true, html: { multipart: true }, url: events_path, method: :post, data: { turbo: false }) do |f| %>
+<%= bootstrap_form_with(model: @event, local: true, html: { multipart: true }, url: events_path, method: :post) do |f| %>
 
-    <%= f.text_field :event_name %>
-    <%= f.text_field :location %>
-    <%= f.text_field :price %>
-    <%= f.date_field :date %>
-    <%= f.text_field :capacity %>
-    <%= f.text_area :description %>
-    <%= f.file_field :image %>
+  <% if @event.errors.any? %>
+    <div class="alert alert-danger">
+      <h5>The form contains <%= pluralize(@event.errors.count, "error") %>:</h5>
+      <ul>
+        <% @event.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <%= f.text_field :event_name, placeholder: "Enter event name", maxlength: 100, required: true %>
+    <%= f.text_field :location, placeholder: "Enter location", maxlength: 150, required: true %>
+    <%= f.number_field :price, placeholder: "Enter price (e.g., 0 for free)", step: 0.01, min: 0, required: true %>
+    <%= f.date_field :date, required: true %>
+    <%= f.number_field :capacity, placeholder: "Enter number of attendees", min: 1, required: true %>
+    <%= f.text_area :description, placeholder: "Describe the event (optional)", maxlength: 1000, rows: 5, label: "Description (optional)" %>
+    <%= f.file_field :image, accept: "image/png,image/jpeg", label: "Event Image (optional)" %>
 
     <div class="d-flex gap-2 mt-3">
         <%= f.submit 'Create Event', class: 'btn btn-primary' %>

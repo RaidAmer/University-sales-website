@@ -92,3 +92,8 @@ body.dark-theme a.nav-link {
 body.light-theme a.nav-link {
   color: #333333 !important;
 }
+
+// Force white table headers in dark tables
+.table-dark th {
+  color: #ffffff !important;
+}

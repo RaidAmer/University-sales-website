@@ -1,42 +1,86 @@
-<h1>My Orders</h1>
-
-<table class='table table-hover'>
-    <thead class='table-dark'>
-        <tr>
-            <th>Order</th>
-            <th>Total Price</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
+<% if @buyer_orders.present? %>
+  <h1>My Orders </h1>
+  <table class='table table-hover'>
+    <thead class='table-primary'>
+      <tr>
+        <th></th>
+        <th>Total Price</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Delivered?</th>
+        <th></th>
+      </tr>
     </thead>
-
     <tbody>
-        <% @checkout_orders.each do |checkout_order| %>
-            <tr>
-                <td><%= checkout_order.id %></td>
-                <td><%= number_to_currency((checkout_order.total_price * 1.07).round(2)) %></td>
-                <td><%= checkout_order.order_date.strftime("%B %d, %Y") %></td>
-                <td><%= checkout_order.status %></td>
-                <td><%= link_to "View Order", checkout_order_path(checkout_order), class: 'btn btn-primary' %></td>
-                <td><% if checkout_order.status == 'Pending' %>
-                        <%= link_to "Delivered", delivered_checkout_order_path(checkout_order), 
-                            method: :patch, 
-                            data: { confirm: "Are you sure your order was delivered?" },
-                            class: 'btn btn-secondary' %>
-                    <% end %>
-                </td>
-                <td>
-                    <% if checkout_order.status == 'Pending' %>
-                        <%= link_to "Cancel", cancel_checkout_order_path(checkout_order), 
-                            method: :patch, 
-                            data: { confirm: "Are you sure you want to cancel this order?" },
-                            class: 'btn btn-danger' %>
-                    <% end %>
-                </td>
-            </tr>
-        <% end %>
+      <% @buyer_orders.each do |order| %>
+        <tr>
+          <td></td>
+          <td><%= number_to_currency((order.total_price * 1.07).round(2)) %></td>
+          <td><%= order.order_date&.strftime("%B %d, %Y") || "Date not set" %></td>
+          <td>
+            <% if order.status == 'Cancelled' %>
+              Cancelled by Seller
+            <% elsif order.status == 'Delivered' %>
+              Marked Delivered by Seller
+            <% elsif order.confirmed_delivery %>
+              Confirmed Delivered by Buyer
+            <% else %>
+              <%= order.status %>
+            <% end %>
+          </td>
+          <td>
+            <%= form_with url: confirm_delivery_checkout_order_path(order), method: :patch, local: true do %>
+              <%= check_box_tag "confirmed_delivery", true, order.confirmed_delivery, onchange: "this.form.submit()" %>
+            <% end %>
+          </td>
+          <td><%= link_to "View Order", checkout_order_path(order), class: 'btn btn-primary' %></td>
+        </tr>
+      <% end %>
     </tbody>
-</table>
+  </table>
+<% end %>
+
+<% if @seller_orders.present? %>
+  <hr>
+  <h1>Customer Orders </h1>
+  <table class='table table-hover'>
+    <thead class='table-primary'>
+      <tr>
+        <th></th>
+        <th>Total Price</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @seller_orders.each do |order| %>
+        <tr>
+          <td></td>
+          <td><%= number_to_currency((order.total_price * 1.07).round(2)) %></td>
+          <td><%= order.order_date&.strftime("%B %d, %Y") || "Date not set" %></td>
+          <td><%= order.status %></td>
+          <td><%= link_to "View Order", checkout_order_path(order), class: 'btn btn-primary' %></td>
+          <td>
+            <% if order.status == 'Placed' %>
+              <%= link_to "Delivered", mark_as_delivered_checkout_order_path(order),
+                method: :patch,
+                data: { confirm: "Are you sure this order has been delivered?" },
+                class: 'btn btn-secondary' %>
+            <% end %>
+          </td>
+          <td>
+            <% if order.status == 'Placed' %>
+              <%= link_to "Cancel", cancel_checkout_order_path(order),
+                method: :patch,
+                data: { confirm: "Are you sure you want to cancel this order?" },
+                class: 'btn btn-danger' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

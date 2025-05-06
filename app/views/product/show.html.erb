@@ -10,22 +10,11 @@
     <div class="col-md-6 d-flex flex-column justify-content-center">
       <h1 class="mb-3"><%= @product.name %></h1>
 
-      <p class="text-muted mb-1">
-        Sold by:
-        <strong><%= @product.user.first_name %> <%= @product.user.last_name %></strong>
-      </p>
-
-
-<p> <%=@product.description%></p>
-<p><%= image_tag @product.image, width: 100, height: 100, alt: "#{@product.name} image" %></p>
-<p><%= number_to_currency(@product.price) %></p>
-<p><%=@product.status%></p>
-
       <p class="text-muted mb-1">Sold by: <strong><%= @product.user.first_name %> <%= @product.user.last_name %></strong></p>
 
       <p class="mb-3"><%= @product.description %></p>
 
-      <h4 class="text-success mb-2">$<%= '%.2f' % @product.price %></h4>
+      <h4 class="text-success mb-2"><%= number_to_currency(@product.price) %></h4>
       <p class="mb-4">Status: <%= @product.status %></p>
 
       <%= button_to "Add to Cart",
@@ -35,7 +24,6 @@
             id: "add-to-cart-btn" %>
 
       <%= link_to "Reviews", category_product_reviews_path(@category, @product), class: "btn btn-outline-secondary rounded-pill px-4"%>
-
       <%= link_to "← Back to Store", category_products_path(@category), class: "btn btn-outline-secondary rounded-pill px-4" %>
     </div>
   </div>

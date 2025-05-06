@@ -1,5 +1,12 @@
 <h1>Notifications</h1>
 
+<% flash.each do |key, message| %>
+  <div class="alert alert-<%= key == 'notice' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
+    <%= message %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
+
 <div class="mb-3 d-flex justify-content-between align-items-center">
   <div>
     <%= link_to "📋 All", notifications_path, class: "btn btn-sm #{params[:status].blank? ? 'btn-outline-primary filter-selected' : 'btn-outline-secondary'}" %>
@@ -10,6 +17,11 @@
 </div>
 
 <% @notifications.update_all(read: true) if params[:status] == "unread" %>
+<% if @notifications.empty? %>
+  <div class="alert alert-info text-center">
+    You have no notifications.
+  </div>
+<% end %>
 <% @notifications.each do |notification| %>
   <%# notification.update(read: true) unless notification.read? %>
   <div class="card mb-2 <%= notification.read? ? '' : 'border border-warning bg-light fw-bold' %>">
@@ -35,6 +47,8 @@
           <% elsif notification.notifiable_type == "Message" %>
             <% if notification.actor == current_user %>
               📨 You sent a message.
+            <% elsif notification.actor&.admin? %>
+              📨 Admin sent you a message.
             <% else %>
               📨 <%= notification.actor&.email || "Someone" %> sent you a message.
             <% end %>
@@ -57,8 +71,45 @@
             <% else %>
               <em>User not found</em>
             <% end %>
+          <% elsif notification.action&.downcase&.include?("cancel") && notification.notifiable_type == "CheckoutOrder" %>
+            ❌ <%= notification.actor&.email || "A buyer" %> cancelled an order for your item:
+            <%= link_to "📄 View Order", checkout_order_path(notification.notifiable_id), class: "btn btn-outline-danger btn-sm mt-1" %>
+          <% elsif notification.action&.downcase&.include?("cancelled an order you placed") && notification.notifiable_type == "CheckoutOrder" %>
+            ❌ <%= notification.actor&.email || "The seller" %> cancelled an order you placed:
+            <%= link_to "📄 View Order", checkout_order_path(notification.notifiable_id), class: "btn btn-outline-warning btn-sm mt-1" %>
+          <% elsif notification.action&.include?("order has been delivered") %>
+            📦 <%= notification.action %>
+            <%= link_to "📄 View Order", checkout_order_path(notification.notifiable_id), class: "btn btn-outline-primary btn-sm mt-1" %>
+          <% elsif notification.action == "deleted an event you registered for" %>
+            ❌ <strong><%= notification.actor&.email || "The organizer" %></strong> canceled the event
+            <%= link_to (notification.notifiable.try(:event_name) || notification.notifiable.try(:title) || "an event"), event_path(notification.notifiable_id), class: "text-decoration-underline" %>
+            <span class="text-muted">— <%= time_ago_in_words(notification.created_at) %> ago</span>
+          <% elsif notification.notifiable_type == "CheckoutOrder" && notification.action&.include?("purchased") %>
+            🛒 <%= notification.actor&.email || "Someone" %> purchased:
+            <% if notification.metadata&.[]('product_names') %>
+              <ul class="mb-1">
+                <% notification.metadata['product_names'].each do |name| %>
+                  <li><%= name %></li>
+                <% end %>
+              </ul>
+            <% else %>
+              "<%= notification.metadata&.[]('product_name') || "Unnamed Item" %>"
+            <% end %>
+            <%= link_to "View", checkout_order_path(notification.notifiable_id), class: "btn btn-sm btn-outline-primary ms-2" %>
+            <span class="text-muted d-block mt-1">— <%= time_ago_in_words(notification.created_at) %> ago</span>
+          <% elsif notification.action == "unregistered from your event" %>
+            📝 <%= notification.actor&.email || "Someone" %> unregistered from your event
+            <%= link_to (notification.notifiable.try(:event_name) || notification.notifiable.try(:title) || "an event"), event_path(notification.notifiable_id), class: "text-decoration-underline" %>
+            <span class="text-muted">— <%= time_ago_in_words(notification.created_at) %> ago</span>
           <% else %>
-            <%= link_to notification.notifiable_type, polymorphic_path(notification.notifiable) rescue "#" %>
+            <% if notification.notifiable_type == "CheckoutOrder" %>
+              📦 <%= notification.action %>
+              <%= link_to "📄 View Order", checkout_order_path(notification.notifiable_id), class: "btn btn-outline-primary btn-sm mt-1" %>
+            <% else %>
+              📝 <%= notification.actor&.email || "Someone" %> registered for your event
+              <%= link_to (notification.notifiable.try(:event_name) || notification.notifiable.try(:title) || "an event"), event_path(notification.notifiable_id), class: "text-decoration-underline" %>
+              <span class="text-muted">— <%= time_ago_in_words(notification.created_at) %> ago</span>
+            <% end %>
           <% end %>
         </p>
       </div>

@@ -9,7 +9,7 @@
       
       <p class="mb-3"><%= @product.description %></p>
 
-      <h4 class="text-success mb-2">$<%= @product.price %></h4>
+      <h4 class="text-success mb-2"><%= number_to_currency(@product.price) %></h4>
       <p>Status: <%= @product.status %></p>
 
       <div class="mt-4">

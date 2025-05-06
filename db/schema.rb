@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_04_044232) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_05_214753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,6 +75,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_04_044232) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "buyer_confirmed"
+    t.boolean "confirmed_delivery"
   end
 
   create_table "customer_reviews", force: :cascade do |t|
@@ -101,6 +103,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_04_044232) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.string "title"
     t.index ["event_name"], name: "index_events_on_event_name", unique: true
     t.index ["user_id"], name: "index_events_on_user_id"
   end
@@ -112,6 +115,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_04_044232) do
     t.boolean "read", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "checkout_order_id"
+    t.bigint "event_id"
     t.index ["recipient_id"], name: "index_messages_on_recipient_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
   end
@@ -127,6 +132,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_04_044232) do
     t.boolean "read", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "metadata"
     t.index ["actor_type", "actor_id"], name: "index_notifications_on_actor"
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"

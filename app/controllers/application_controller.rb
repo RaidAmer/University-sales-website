@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
-# app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
+  # Use current_user to get the cart for the logged-in user
   def current_cart
-    @current_cart ||= Cart.first
+    @current_cart ||= current_user.cart || current_user.create_cart
   end
 
   before_action :store_user_location!, if: :storable_location?
   before_action :set_notifications
   before_action :check_approval_status
 
+  # Check if the user is approved
   def check_approval_status
     if current_user && current_user.approved.nil? && request.path.start_with?("/products")
       flash.now[:alert] = "Access denied. Please wait until your account is approved by an admin."
@@ -39,6 +40,7 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # Set notifications for the current user
   def set_notifications
     @notifications = current_user.notifications.where(read: false).order(created_at: :desc).limit(5) if current_user
   end

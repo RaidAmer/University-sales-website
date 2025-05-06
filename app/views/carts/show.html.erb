@@ -1,3 +1,7 @@
+<% if flash[:alert].present? %>
+  <div class="alert alert-warning"><%= flash[:alert] %></div>
+<% end %>
+
 <h1>My Cart</h1>
 
 <% if @cart_items.any? %>
@@ -24,7 +28,6 @@
                   method: :patch,
                   class: "btn btn-sm btn-outline-primary px-1 py-0" %>
 
-
             <span class="mx-2"><%= item.quantity %></span>
 
             <%= button_to "–", update_quantity_cart_item_path(item, quantity: item.quantity - 1),
@@ -48,11 +51,7 @@
 
   <p><strong>Total:</strong> $<%= '%.2f' % @total %></p>
 
-  <%= form_with url: checkout_orders_path, method: :post do |f| %>
-    <%= hidden_field_tag :total_price, @total %>
-    <%= hidden_field_tag :user_id, 1 %>
-    <%= f.submit "Proceed to Payment", class: "btn btn-primary" %>
-  <% end %>
+  <%= button_to "Proceed to Payment", checkout_orders_path, method: :post, class: "btn btn-primary" %>
 <% else %>
-  <p>There are no items in your cart.</p>
+  <div class="alert alert-warning">Your cart is empty.</div>
 <% end %>

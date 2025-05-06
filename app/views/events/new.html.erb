@@ -18,15 +18,8 @@
     <%= f.number_field :price, placeholder: "Enter price (e.g., 0 for free)", step: 0.01, min: 0, required: true %>
     <%= f.date_field :date, required: true %>
     <%= f.number_field :capacity, placeholder: "Enter number of attendees", min: 1, required: true %>
-    <div>
-      <%= f.label :description, "Description (optional)" %>
-      <%= f.text_area :description, placeholder: "Describe the event (optional)", maxlength: 1000, rows: 5 %>
-    </div>
-
-    <div>
-      <%= f.label :image, "Event Image (optional)" %>
-      <%= f.file_field :image, accept: "image/png,image/jpeg" %>
-    </div>
+    <%= f.text_area :description, placeholder: "Describe the event (optional)", maxlength: 1000, rows: 5, label: "Description (optional)" %>
+    <%= f.file_field :image, accept: "image/png,image/jpeg", label: "Event Image (optional)" %>
 
     <div class="d-flex gap-2 mt-3">
         <%= f.submit 'Create Event', class: 'btn btn-primary' %>

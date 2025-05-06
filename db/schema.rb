@@ -201,6 +201,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_05_214753) do
   end
 
   create_table "reviews", force: :cascade do |t|
+    t.string "title"
     t.text "content"
     t.integer "rating"
     t.bigint "checkout_order_id", null: false

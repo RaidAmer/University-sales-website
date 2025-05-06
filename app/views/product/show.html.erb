@@ -10,12 +10,11 @@
     <div class="col-md-6 d-flex flex-column justify-content-center">
       <h1 class="mb-3"><%= @product.name %></h1>
 
+      <h4 class="text-success mb-2"><%= number_to_currency(@product.price) %></h4>
+
       <p class="text-muted mb-1">Sold by: <strong><%= @product.user.first_name %> <%= @product.user.last_name %></strong></p>
 
       <p class="mb-3"><%= @product.description %></p>
-
-      <h4 class="text-success mb-2"><%= number_to_currency(@product.price) %></h4>
-      <p class="mb-4">Status: <%= @product.status %></p>
 
       <%= button_to "Add to Cart",
             cart_items_path(product_id: @product.id),
